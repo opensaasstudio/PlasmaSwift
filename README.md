@@ -22,7 +22,7 @@ pod "PlasmaSwift"
 
 ## Author
 
-stormcat24, stormcat24@stormcat.io
+FRESH!
 
 ## License
 
