@@ -1,11 +1,16 @@
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '8.3'
+
 use_frameworks!
 
+def pods
+  pod 'PlasmaSwift', :path => '../', inhibit_warnings: true
+end
+
 target 'PlasmaSwift_Example' do
-  pod 'PlasmaSwift', :path => '../'
+  pods
+end
 
-  target 'PlasmaSwift_Tests' do
-    inherit! :search_paths
-
-    
-  end
+target 'PlasmaSwift_Tests' do
+  pods
 end
