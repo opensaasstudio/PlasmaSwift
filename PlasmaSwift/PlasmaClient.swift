@@ -15,7 +15,7 @@ public class PlasmaClient {
     let target: String
     let pemRootCert: String?
     
-    init(host: String, port: Int, pemRootCert: String?) {
+    public init(host: String, port: Int, pemRootCert: String? = nil) {
         self.host = host
         self.target = "\(host):\(port)"
         self.pemRootCert = pemRootCert
