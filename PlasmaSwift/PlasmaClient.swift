@@ -29,16 +29,17 @@ public class PlasmaClient {
             GRPCCall.useInsecureConnections(forHost: self.target)
         }
         
-        let eventTypeRequests = eventTypes.map {
+        let eventTypeRequests = eventTypes.map { (type: String) -> PLASMAEventType in
             let et = PLASMAEventType()
-            et.type = $0
+            et.type = type
+            return et
         }
         
         let req = PLASMARequest()
         req.eventsArray = NSMutableArray(array: eventTypeRequests)
         
         let client = PLASMAStreamService(host: self.target)
-        client.events(with: req, eventHandler: eventHandler)
+        client.rpcToEvents(with: req, eventHandler: eventHandler).start()
     }
     
 }
