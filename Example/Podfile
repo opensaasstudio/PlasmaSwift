@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'PlasmaSwift_Example' do
+  pod 'PlasmaSwift', :path => '../'
+
+  target 'PlasmaSwift_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
