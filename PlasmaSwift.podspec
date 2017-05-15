@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'PlasmaSwift'
-  s.version          = '0.1.0'
+  s.version          = '0.0.1'
   s.summary          = 'A short description of PlasmaSwift.'
 
   s.description      = <<-DESC
@@ -30,15 +30,16 @@ Plasma Client for Swift.
   protoc_dir = "#{pods_root}/!ProtoCompiler"
   protoc = "#{protoc_dir}/protoc"
   plugin = "#{pods_root}/!ProtoCompiler-gRPCPlugin/grpc_objective_c_plugin"
-  s.prepare_command = <<-CMD
-    #{protoc} \
-        --plugin=protoc-gen-grpc=#{plugin} \
-        --objc_out=. \
-        --grpc_out=. \
-        -I ./proto \
-        -I #{protoc_dir} \
-        ./proto/stream.proto
-  CMD
+  # avoid pod spec error
+  #s.prepare_command = <<-CMD
+    ##{protoc} \
+        #--plugin=protoc-gen-grpc=#{plugin} \
+        #--objc_out=. \
+        #--grpc_out=. \
+        #-I ./proto \
+        #-I #{protoc_dir} \
+        #./proto/stream.proto
+  #CMD
 
   s.subspec 'Messages' do |ms|
     ms.source_files = '*.pbobjc.{h,m}'
