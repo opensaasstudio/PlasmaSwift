@@ -22,15 +22,15 @@
 }
 
 
-#pragma mark Events(Request) returns (stream Payload)
+#pragma mark Events(stream Request) returns (stream Payload)
 
-- (void)eventsWithRequest:(PLASMARequest *)request eventHandler:(void(^)(BOOL done, PLASMAPayload *_Nullable response, NSError *_Nullable error))eventHandler{
-  [[self RPCToEventsWithRequest:request eventHandler:eventHandler] start];
+- (void)eventsWithRequestsWriter:(GRXWriter *)requestWriter eventHandler:(void(^)(BOOL done, PLASMAPayload *_Nullable response, NSError *_Nullable error))eventHandler{
+  [[self RPCToEventsWithRequestsWriter:requestWriter eventHandler:eventHandler] start];
 }
 // Returns a not-yet-started RPC object.
-- (GRPCProtoCall *)RPCToEventsWithRequest:(PLASMARequest *)request eventHandler:(void(^)(BOOL done, PLASMAPayload *_Nullable response, NSError *_Nullable error))eventHandler{
+- (GRPCProtoCall *)RPCToEventsWithRequestsWriter:(GRXWriter *)requestWriter eventHandler:(void(^)(BOOL done, PLASMAPayload *_Nullable response, NSError *_Nullable error))eventHandler{
   return [self RPCToMethod:@"Events"
-            requestsWriter:[GRXWriter writerWithValue:request]
+            requestsWriter:requestWriter
              responseClass:[PLASMAPayload class]
         responsesWriteable:[GRXWriteable writeableWithEventHandler:eventHandler]];
 }
