@@ -10,11 +10,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol PLASMAStreamService <NSObject>
 
-#pragma mark Events(Request) returns (stream Payload)
+#pragma mark Events(stream Request) returns (stream Payload)
 
-- (void)eventsWithRequest:(PLASMARequest *)request eventHandler:(void(^)(BOOL done, PLASMAPayload *_Nullable response, NSError *_Nullable error))eventHandler;
+- (void)eventsWithRequestsWriter:(GRXWriter *)requestWriter eventHandler:(void(^)(BOOL done, PLASMAPayload *_Nullable response, NSError *_Nullable error))eventHandler;
 
-- (GRPCProtoCall *)RPCToEventsWithRequest:(PLASMARequest *)request eventHandler:(void(^)(BOOL done, PLASMAPayload *_Nullable response, NSError *_Nullable error))eventHandler;
+- (GRPCProtoCall *)RPCToEventsWithRequestsWriter:(GRXWriter *)requestWriter eventHandler:(void(^)(BOOL done, PLASMAPayload *_Nullable response, NSError *_Nullable error))eventHandler;
 
 
 @end

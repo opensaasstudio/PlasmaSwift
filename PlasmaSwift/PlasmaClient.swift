@@ -21,7 +21,7 @@ public class PlasmaClient {
         self.pemRootCert = pemRootCert
     }
     
-    public func subscribe(eventTypes: [String], eventHandler: @escaping (Bool, PLASMAPayload?, Error?) -> Swift.Void) throws {
+    public func subscribe(eventTypes: [String], eventHandler: @escaping (Bool, PLASMAPayload?, Error?) -> Swift.Void) throws -> GRXWriter! {
     
         if let pem = self.pemRootCert {
             try GRPCCall.setTLSPEMRootCerts(pem, forHost: self.host)
@@ -39,7 +39,10 @@ public class PlasmaClient {
         req.eventsArray = NSMutableArray(array: eventTypeRequests)
         
         let client = PLASMAStreamService(host: self.target)
-        client.rpcToEvents(with: req, eventHandler: eventHandler).start()
+        
+        let requestWriter = GRXWriter(value: req)
+        client.rpcToEvents(withRequestsWriter: requestWriter!, eventHandler: eventHandler).start()
+        return requestWriter
     }
     
 }
