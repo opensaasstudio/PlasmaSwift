@@ -11,9 +11,20 @@ import PlasmaSwift
 
 class ViewController: UIViewController {
 
+    private var client: PlasmaClient?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        let client = try! PlasmaClient(host: "localhost", port: 50051)
+        
+        client.connect() { (result, payload, error) -> Void in
+            if let err = error {
+                self.label.text = err.localizedDescription
+            } else {
+                self.label.text = payload?.data_p
+            }
+        }
+        self.client = client
     }
     
     override func didReceiveMemoryWarning() {
@@ -25,25 +36,18 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var inputEventType: UITextField!
     
-    @IBAction func connect(_ sender: Any) {
-        
+    
+    @IBAction func subscribe(_ sender: Any) {
         if (self.inputEventType.text?.isEmpty)! {
             self.label.text = "eventType is not specified"
         } else {
-            let client = PlasmaClient(host: "localhost", port: 50051)
-            
-            do {
-                try client.subscribe(eventTypes: [self.inputEventType.text!]) { (result, payload, error) -> Void in
-                    if let err = error {
-                        self.label.text = err.localizedDescription
-                    } else {
-                        self.label.text = payload?.data_p
-                    }
-                }
-            } catch let error {
-                print(error)
-            }
+            client?.subscribe(eventTypes: [self.inputEventType.text!])
         }
+    }
+    
+    @IBAction func close(_ sender: Any) {
+        client?.shutdown()
+        self.label.text = "closed connection"
     }
     
 }

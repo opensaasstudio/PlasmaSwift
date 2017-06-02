@@ -48,6 +48,7 @@ static GPBFileDescriptor *PLASMAStreamRoot_FileDescriptor(void) {
 @implementation PLASMARequest
 
 @dynamic eventsArray, eventsArray_Count;
+@dynamic forceClose;
 
 typedef struct PLASMARequest__storage_ {
   uint32_t _has_storage_[1];
@@ -69,6 +70,15 @@ typedef struct PLASMARequest__storage_ {
         .flags = (GPBFieldFlags)(GPBFieldRepeated | GPBFieldTextFormatNameCustom),
         .dataType = GPBDataTypeMessage,
       },
+      {
+        .name = "forceClose",
+        .dataTypeSpecific.className = NULL,
+        .number = PLASMARequest_FieldNumber_ForceClose,
+        .hasIndex = 0,
+        .offset = 1,  // Stored in _has_storage_ to save space.
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldTextFormatNameCustom),
+        .dataType = GPBDataTypeBool,
+      },
     };
     GPBDescriptor *localDescriptor =
         [GPBDescriptor allocDescriptorForClass:[PLASMARequest class]
@@ -80,7 +90,7 @@ typedef struct PLASMARequest__storage_ {
                                          flags:GPBDescriptorInitializationFlag_None];
 #if !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     static const char *extraTextFormatInfo =
-        "\001\001\000Events\000";
+        "\002\001\000Events\000\002\n\000";
     [localDescriptor setupExtraTextInfo:extraTextFormatInfo];
 #endif  // !GPBOBJC_SKIP_MESSAGE_TEXTFORMAT_EXTRAS
     NSAssert(descriptor == nil, @"Startup recursed!");
