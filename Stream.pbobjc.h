@@ -50,6 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef GPB_ENUM(PLASMARequest_FieldNumber) {
   PLASMARequest_FieldNumber_EventsArray = 1,
+  PLASMARequest_FieldNumber_ForceClose = 2,
 };
 
 @interface PLASMARequest : GPBMessage
@@ -57,6 +58,8 @@ typedef GPB_ENUM(PLASMARequest_FieldNumber) {
 @property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<PLASMAEventType*> *eventsArray;
 /** The number of items in @c eventsArray without causing the array to be created. */
 @property(nonatomic, readonly) NSUInteger eventsArray_Count;
+
+@property(nonatomic, readwrite) BOOL forceClose;
 
 @end
 

@@ -11,24 +11,29 @@ import GRPCClient
 
 public class PlasmaClient {
     
-    let host: String
     let target: String
-    let pemRootCert: String?
+    let requestBuffer: GRXBufferedPipe
+    let client: PLASMAStreamService
     
-    public init(host: String, port: Int, pemRootCert: String? = nil) {
-        self.host = host
+    public init(host: String, port: Int, pemRootCert: String? = nil) throws {
         self.target = "\(host):\(port)"
-        self.pemRootCert = pemRootCert
-    }
-    
-    public func subscribe(eventTypes: [String], eventHandler: @escaping (Bool, PLASMAPayload?, Error?) -> Swift.Void) throws -> GRXWriter! {
-    
-        if let pem = self.pemRootCert {
-            try GRPCCall.setTLSPEMRootCerts(pem, forHost: self.host)
+        
+        if let pem = pemRootCert {
+            try GRPCCall.setTLSPEMRootCerts(pem, forHost: host)
         } else {
             GRPCCall.useInsecureConnections(forHost: self.target)
         }
-        
+
+        self.client = PLASMAStreamService(host: self.target)
+        self.requestBuffer = GRXBufferedPipe()
+    }
+    
+    public func connect(responseHandler: @escaping (Bool, PLASMAPayload?, Error?) -> Swift.Void) {
+        client.rpcToEvents(withRequestsWriter: requestBuffer, eventHandler: responseHandler).start()
+    }
+    
+    public func subscribe(eventTypes: [String]) {
+    
         let eventTypeRequests = eventTypes.map { (type: String) -> PLASMAEventType in
             let et = PLASMAEventType()
             et.type = type
@@ -38,11 +43,13 @@ public class PlasmaClient {
         let req = PLASMARequest()
         req.eventsArray = NSMutableArray(array: eventTypeRequests)
         
-        let client = PLASMAStreamService(host: self.target)
-        
-        let requestWriter = GRXWriter(value: req)
-        client.rpcToEvents(withRequestsWriter: requestWriter!, eventHandler: eventHandler).start()
-        return requestWriter
+        requestBuffer.writeValue(req)
+    }
+    
+    public func shutdown() {
+        let closeReq = PLASMARequest()
+        closeReq.forceClose = true
+        requestBuffer.writeValue(closeReq)
     }
     
 }
