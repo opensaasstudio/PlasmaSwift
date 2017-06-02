@@ -41,7 +41,7 @@ class ViewController: UIViewController {
         if (self.inputEventType.text?.isEmpty)! {
             self.label.text = "eventType is not specified"
         } else {
-            client?.subscribe(eventTypes: [self.inputEventType.text!])
+            client?.subscribe([self.inputEventType.text!])
         }
     }
     
