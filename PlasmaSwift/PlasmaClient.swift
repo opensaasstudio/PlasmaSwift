@@ -3,7 +3,7 @@
 //  Pods
 //
 //  Created by @stormcat24 on 2017/05/09.
-//
+//  Copyright (c) 2017 io.github.openfresh.plasma. All rights reserved.
 //
 
 import Foundation

@@ -177,7 +177,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0830;
-				ORGANIZATIONNAME = konotorrrri;
+				ORGANIZATIONNAME = io.github.openfresh.plasma;
 				TargetAttributes = {
 					77F1EAC11EEE8EE90054EAC1 = {
 						CreatedOnToolsVersion = 8.3.3;
@@ -464,7 +464,7 @@
 				INFOPLIST_FILE = "PlasmaSwift-Demo/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "konotorrrri.PlasmaSwift-Demo";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.github.openfresh.plasma.PlasmaSwift-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -478,7 +478,7 @@
 				INFOPLIST_FILE = "PlasmaSwift-Demo/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "konotorrrri.PlasmaSwift-Demo";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.github.openfresh.plasma.PlasmaSwift-Demo";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

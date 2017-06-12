@@ -3,7 +3,7 @@
 //  PlasmaSwift-Demo
 //
 //  Created by konotorrrri on 2017/06/12.
-//  Copyright © 2017年 konotorrrri. All rights reserved.
+//  Copyright (c) 2017 io.github.openfresh.plasma. All rights reserved.
 //
 
 import UIKit

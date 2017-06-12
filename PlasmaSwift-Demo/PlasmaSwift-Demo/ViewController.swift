@@ -3,7 +3,7 @@
 //  PlasmaSwift
 //
 //  Created by stormcat24 on 05/12/2017.
-//  Copyright (c) 2017 stormcat24. All rights reserved.
+//  Copyright (c) 2017 io.github.openfresh.plasma. All rights reserved.
 //
 
 import UIKit
