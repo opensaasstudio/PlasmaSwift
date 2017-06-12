@@ -22,11 +22,11 @@ Plasma Client for Swift.
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'PlasmaSwift/*.swift'
-  
+  s.source_files = 'PlasmaSwift/**/*.{h,swift}'
+
   s.dependency "!ProtoCompiler-gRPCPlugin", "~> 1.3.0"
 
-  pods_root = './Example/Pods'
+  pods_root = 'Pods'
   protoc_dir = "#{pods_root}/!ProtoCompiler"
   protoc = "#{protoc_dir}/protoc"
   plugin = "#{pods_root}/!ProtoCompiler-gRPCPlugin/grpc_objective_c_plugin"
@@ -62,4 +62,3 @@ Plasma Client for Swift.
   end
 
 end
-
