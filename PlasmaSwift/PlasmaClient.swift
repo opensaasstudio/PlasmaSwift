@@ -60,7 +60,7 @@ public extension PlasmaClient {
                 protoCall.cancel()
             }
         }
-        private let reconnectQueue: DispatchQueue = .init(label: "tv.freshlive.plasma.reconnectQueue")
+        private let reconnectQueue: DispatchQueue = .init(label: "io.github.openfresh.plasma.reconnectQueue")
         private let service: PLASMAStreamService
         private let eventHandler: EventHandler
         private let call: Atomic<Call?> = .init(nil) { oldValue in
