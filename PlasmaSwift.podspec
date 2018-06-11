@@ -31,15 +31,15 @@ Plasma Client for Swift.
   protoc = "#{protoc_dir}/protoc"
   plugin = "#{pods_root}/!ProtoCompiler-gRPCPlugin/grpc_objective_c_plugin"
   # avoid pod spec error
-  #s.prepare_command = <<-CMD
-    ##{protoc} \
-        #--plugin=protoc-gen-grpc=#{plugin} \
-        #--objc_out=. \
-        #--grpc_out=. \
-        #-I ./proto \
-        #-I #{protoc_dir} \
-        #./proto/stream.proto
-  #CMD
+  s.prepare_command = <<-CMD
+    #{protoc} \
+        --plugin=protoc-gen-grpc=#{plugin} \
+        --objc_out=. \
+        --grpc_out=. \
+        -I ./proto \
+        -I #{protoc_dir} \
+        ./proto/stream.proto
+  CMD
 
   s.subspec 'Messages' do |ms|
     ms.source_files = '*.pbobjc.{h,m}'
