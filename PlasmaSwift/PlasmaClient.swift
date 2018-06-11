@@ -111,7 +111,7 @@ public extension PlasmaClient {
                         PlasmaClient.log("received payload = \(payload)")
                     }
                     
-                    self?.eventHandler(result, payload, error)
+                    self?.eventHandler((result, payload, error))
                 }
             }
         }
