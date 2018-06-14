@@ -65,7 +65,8 @@ public extension PlasmaClient {
             self.eventHandler = eventHandler
             connect(retry: 10)
         }
-        
+
+        @discardableResult
         public func subscribe(types: [String]) -> Self {
             let events = types.map(PLASMAEventType.init(type:))
             call.withValue { call in
