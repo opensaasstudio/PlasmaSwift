@@ -1,4 +1,5 @@
 #import "Stream.pbrpc.h"
+#import "Stream.pbobjc.h"
 
 #import <ProtoRPC/ProtoRPC.h>
 #import <RxLibrary/GRXWriter+Immediate.h>
