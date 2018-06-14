@@ -1,9 +1,17 @@
+#if !GPB_GRPC_FORWARD_DECLARE_MESSAGE_PROTO
 #import "Stream.pbobjc.h"
+#endif
 
 #import <ProtoRPC/ProtoService.h>
+#import <ProtoRPC/ProtoRPC.h>
 #import <RxLibrary/GRXWriteable.h>
 #import <RxLibrary/GRXWriter.h>
 
+#if GPB_GRPC_FORWARD_DECLARE_MESSAGE_PROTO
+  @class PLASMAPayload;
+  @class PLASMARequest;
+#else
+#endif
 
 
 NS_ASSUME_NONNULL_BEGIN

@@ -1,16 +1,10 @@
-//
-//  ViewController.swift
-//  PlasmaSwift
-//
-//  Created by stormcat24 on 05/12/2017.
-//  Copyright (c) 2017 io.github.openfresh.plasma. All rights reserved.
-//
-
 import UIKit
 import PlasmaSwift
 
-class ViewController: UIViewController {
-    
+final class ViewController: UIViewController {
+    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var inputEventType: UITextField!
+
     private var connection: PlasmaClient.Connection?
     
     override func viewDidLoad() {
@@ -18,39 +12,28 @@ class ViewController: UIViewController {
         
         PlasmaClient.useInsecureConnections(forHost: "localhost:50051")
         
-        let connection = PlasmaClient(host: "localhost", port: 50051)
-            .connect { (result, payload, error) in
+        let connection = PlasmaClient(host: "localhost", port: 50051).connect { [weak self] (result, payload, error) in
+            DispatchQueue.main.async {
                 if let err = error {
-                    self.label.text = err.localizedDescription
+                    self?.label.text = err.localizedDescription
                 } else {
-                    self.label.text = payload?.data_p
+                    self?.label.text = payload?.data_p
                 }
+            }
         }
         self.connection = connection
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    @IBOutlet weak var label: UILabel!
-    
-    @IBOutlet weak var inputEventType: UITextField!
-    
-    
+
     @IBAction func subscribe(_ sender: Any) {
-        if (self.inputEventType.text?.isEmpty)! {
-            self.label.text = "eventType is not specified"
+        if (inputEventType.text?.isEmpty)! {
+            label.text = "eventType is not specified"
         } else {
-            connection?.subscribe(types: [self.inputEventType.text!])
+            connection?.subscribe(types: [inputEventType.text!])
         }
     }
     
     @IBAction func close(_ sender: Any) {
         connection?.shutdown()
-        self.label.text = "closed connection"
+        label.text = "closed connection"
     }
-    
 }
-
