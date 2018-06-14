@@ -1,12 +1,12 @@
 Pod::Spec.new do |s|
   s.name = 'PlasmaSwift'
-  s.version = '0.0.5'
+  s.version = '0.1.0'
   s.summary = 'Plasma Client for Swift'
   s.homepage = 'https://github.com/openfresh/PlasmaSwift'
   s.license = { type: 'MIT', file: 'LICENSE' }
   s.author = { 'openfresh': 'valencia_dev@cyberagent.co.jp' }
   s.source = { git: 'https://github.com/openfresh/PlasmaSwift.git', tag: s.version.to_s }
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
   s.source_files = 'PlasmaSwift/**/*.{h,swift}'
 
   s.subspec 'Messages' do |ms|
