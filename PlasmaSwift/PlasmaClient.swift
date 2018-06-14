@@ -9,7 +9,7 @@ public final class PlasmaClient {
     
     private let host: String
     private let port: Int
-    private lazy var service: PLASMAStreamService = .init(host: "\(self.host):\(self.port)")
+    private lazy var service = PLASMAStreamService(host: "\(host):\(port)")
     
     public static func useInsecureConnections(forHost host: String) {
         GRPCCall.useInsecureConnections(forHost: host)
@@ -24,7 +24,7 @@ public final class PlasmaClient {
         self.port = port
     }
     
-    public func connect(eventHandler: @escaping EventHandler) -> Connection {
+    public func connect(_ eventHandler: @escaping EventHandler) -> Connection {
         return .init(service: service, eventHandler: eventHandler)
     }
 }
