@@ -8,12 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		77F1EAE61EEE8FC00054EAC1 /* PlasmaClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F1EAE51EEE8FC00054EAC1 /* PlasmaClient.swift */; };
+		BF03DEEFCA4975720A34EC70 /* Pods_PlasmaSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2421955F6F852844F273268 /* Pods_PlasmaSwift.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		77F1EAAE1EEE8E680054EAC1 /* PlasmaSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PlasmaSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77F1EAB21EEE8E680054EAC1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		77F1EAE51EEE8FC00054EAC1 /* PlasmaClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlasmaClient.swift; sourceTree = "<group>"; };
+		BDD9785CEF68AA510E87ACCC /* Pods-PlasmaSwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlasmaSwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PlasmaSwift/Pods-PlasmaSwift.debug.xcconfig"; sourceTree = "<group>"; };
+		E0FDA00FCC526AD7178BE130 /* Pods-PlasmaSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlasmaSwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-PlasmaSwift/Pods-PlasmaSwift.release.xcconfig"; sourceTree = "<group>"; };
+		E2421955F6F852844F273268 /* Pods_PlasmaSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlasmaSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -21,6 +25,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF03DEEFCA4975720A34EC70 /* Pods_PlasmaSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,6 +37,8 @@
 			children = (
 				77F1EAB01EEE8E680054EAC1 /* PlasmaSwift */,
 				77F1EAAF1EEE8E680054EAC1 /* Products */,
+				CE49CCB7201F50E542253923 /* Pods */,
+				E5217B1CCF55E8D6508ABC20 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -52,6 +59,23 @@
 			path = PlasmaSwift;
 			sourceTree = "<group>";
 		};
+		CE49CCB7201F50E542253923 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				BDD9785CEF68AA510E87ACCC /* Pods-PlasmaSwift.debug.xcconfig */,
+				E0FDA00FCC526AD7178BE130 /* Pods-PlasmaSwift.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		E5217B1CCF55E8D6508ABC20 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E2421955F6F852844F273268 /* Pods_PlasmaSwift.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -69,6 +93,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 77F1EAB61EEE8E680054EAC1 /* Build configuration list for PBXNativeTarget "PlasmaSwift" */;
 			buildPhases = (
+				7D2BAF80F2FF23EA2AA50F2F /* [CP] Check Pods Manifest.lock */,
 				77F1EAA91EEE8E680054EAC1 /* Sources */,
 				77F1EAAA1EEE8E680054EAC1 /* Frameworks */,
 				77F1EAAB1EEE8E680054EAC1 /* Headers */,
@@ -125,6 +150,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7D2BAF80F2FF23EA2AA50F2F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PlasmaSwift-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		77F1EAA91EEE8E680054EAC1 /* Sources */ = {
@@ -243,6 +289,7 @@
 		};
 		77F1EAB71EEE8E680054EAC1 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BDD9785CEF68AA510E87ACCC /* Pods-PlasmaSwift.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = NO;
@@ -267,6 +314,7 @@
 		};
 		77F1EAB81EEE8E680054EAC1 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E0FDA00FCC526AD7178BE130 /* Pods-PlasmaSwift.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = NO;

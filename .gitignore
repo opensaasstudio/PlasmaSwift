@@ -19,5 +19,6 @@ DerivedData
 *.hmap
 *.ipa
 
+Pods/
 PlasmaSwift-Demo/Pods/
 PlasmaSwift-Demo/Podfile.lock
