@@ -26,6 +26,11 @@ brew tap grpc/grpc
 brew install --with-plugins grpc
 ```
 
+and run following command to update compiled proto files.  
+```bash
+pod install
+```
+
 ## Author
 
 openfresh
