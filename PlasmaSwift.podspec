@@ -26,9 +26,10 @@ Plasma Client for Swift.
 
   s.dependency "!ProtoCompiler-gRPCPlugin", "~> 1.9.1"
 
-  protoc_dir = "#{PODS_ROOT}/!ProtoCompiler"
+  pods_root = "../Pods"
+  protoc_dir = "#{pods_root}/!ProtoCompiler"
   protoc = "#{protoc_dir}/protoc"
-  plugin = "#{PODS_ROOT}/!ProtoCompiler-gRPCPlugin/grpc_objective_c_plugin"
+  plugin = "#{pods_root}/!ProtoCompiler-gRPCPlugin/grpc_objective_c_plugin"
 
   s.prepare_command = <<-CMD
     #{protoc} \
