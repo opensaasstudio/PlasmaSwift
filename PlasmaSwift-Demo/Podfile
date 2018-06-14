@@ -7,7 +7,7 @@ def pods
   pod 'PlasmaSwift', :path => '../', inhibit_warnings: true
 end
 
-target 'PlasmaSwift-Demo’ do
+target 'PlasmaSwift-Demo' do
   pods
 end
 
