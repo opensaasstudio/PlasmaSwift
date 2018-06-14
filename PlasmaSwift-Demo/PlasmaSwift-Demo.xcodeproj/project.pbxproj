@@ -12,7 +12,6 @@
 		77F1EACB1EEE8EE90054EAC1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 77F1EAC91EEE8EE90054EAC1 /* Main.storyboard */; };
 		77F1EACD1EEE8EE90054EAC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77F1EACC1EEE8EE90054EAC1 /* Assets.xcassets */; };
 		77F1EADB1EEE8EE90054EAC1 /* PlasmaSwift_DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F1EADA1EEE8EE90054EAC1 /* PlasmaSwift_DemoTests.swift */; };
-		DEE00182E3103AC88A29B5D1 /* Pods_PlasmaSwift_DemoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A34D6E2A43EDE7F0E52D0093 /* Pods_PlasmaSwift_DemoTests.framework */; };
 		E86FAC80820DCBBAB75D2AC4 /* Pods_PlasmaSwift_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97514CF7E3888D94533F0D89 /* Pods_PlasmaSwift_Demo.framework */; };
 /* End PBXBuildFile section */
 
@@ -27,7 +26,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		606C5508D3A7BBD374DC7F18 /* Pods-PlasmaSwift-DemoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlasmaSwift-DemoTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PlasmaSwift-DemoTests/Pods-PlasmaSwift-DemoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		77BA7FF665E36D864B06E59D /* Pods-PlasmaSwift-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlasmaSwift-Demo.release.xcconfig"; path = "Pods/Target Support Files/Pods-PlasmaSwift-Demo/Pods-PlasmaSwift-Demo.release.xcconfig"; sourceTree = "<group>"; };
 		77F1EAC21EEE8EE90054EAC1 /* PlasmaSwift-Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PlasmaSwift-Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		77F1EAC51EEE8EE90054EAC1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -41,7 +39,6 @@
 		79F102E111F9394CFE2951E1 /* Pods-PlasmaSwift-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlasmaSwift-Demo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PlasmaSwift-Demo/Pods-PlasmaSwift-Demo.debug.xcconfig"; sourceTree = "<group>"; };
 		97514CF7E3888D94533F0D89 /* Pods_PlasmaSwift_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlasmaSwift_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A34D6E2A43EDE7F0E52D0093 /* Pods_PlasmaSwift_DemoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PlasmaSwift_DemoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EB4A088CEDE938126B30088D /* Pods-PlasmaSwift-DemoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PlasmaSwift-DemoTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PlasmaSwift-DemoTests/Pods-PlasmaSwift-DemoTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +54,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEE00182E3103AC88A29B5D1 /* Pods_PlasmaSwift_DemoTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,8 +115,6 @@
 			children = (
 				79F102E111F9394CFE2951E1 /* Pods-PlasmaSwift-Demo.debug.xcconfig */,
 				77BA7FF665E36D864B06E59D /* Pods-PlasmaSwift-Demo.release.xcconfig */,
-				606C5508D3A7BBD374DC7F18 /* Pods-PlasmaSwift-DemoTests.debug.xcconfig */,
-				EB4A088CEDE938126B30088D /* Pods-PlasmaSwift-DemoTests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -137,7 +131,6 @@
 				77F1EABF1EEE8EE90054EAC1 /* Frameworks */,
 				77F1EAC01EEE8EE90054EAC1 /* Resources */,
 				1D4C1EB6EF5F0EBA8F648781 /* [CP] Embed Pods Frameworks */,
-				61D45DAB92E27F68C69E467F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -152,12 +145,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 77F1EAE21EEE8EE90054EAC1 /* Build configuration list for PBXNativeTarget "PlasmaSwift-DemoTests" */;
 			buildPhases = (
-				B14775B775304508970FB37F /* [CP] Check Pods Manifest.lock */,
 				77F1EAD21EEE8EE90054EAC1 /* Sources */,
 				77F1EAD31EEE8EE90054EAC1 /* Frameworks */,
 				77F1EAD41EEE8EE90054EAC1 /* Resources */,
-				761732A270052A54AE0ED5F9 /* [CP] Embed Pods Frameworks */,
-				E7DF4AD6231C7B9E03C66568 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -235,43 +225,30 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-PlasmaSwift-Demo/Pods-PlasmaSwift-Demo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/BoringSSL/openssl.framework",
+				"${BUILT_PRODUCTS_DIR}/PlasmaSwift/PlasmaSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC/GRPCClient.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-ProtoRPC/ProtoRPC.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-RxLibrary/RxLibrary.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PlasmaSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRPCClient.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ProtoRPC.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxLibrary.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlasmaSwift-Demo/Pods-PlasmaSwift-Demo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		61D45DAB92E27F68C69E467F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlasmaSwift-Demo/Pods-PlasmaSwift-Demo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		761732A270052A54AE0ED5F9 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlasmaSwift-DemoTests/Pods-PlasmaSwift-DemoTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A9F4D74CEB0C52591365C923 /* [CP] Check Pods Manifest.lock */ = {
@@ -280,43 +257,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PlasmaSwift-Demo-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		B14775B775304508970FB37F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		E7DF4AD6231C7B9E03C66568 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PlasmaSwift-DemoTests/Pods-PlasmaSwift-DemoTests-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -486,7 +436,6 @@
 		};
 		77F1EAE31EEE8EE90054EAC1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 606C5508D3A7BBD374DC7F18 /* Pods-PlasmaSwift-DemoTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -501,7 +450,6 @@
 		};
 		77F1EAE41EEE8EE90054EAC1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EB4A088CEDE938126B30088D /* Pods-PlasmaSwift-DemoTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
