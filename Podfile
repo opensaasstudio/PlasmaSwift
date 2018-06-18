@@ -4,11 +4,11 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'PlasmaSwift' do
-  pod '!ProtoCompiler-gRPCPlugin', '1.9.1'
+  pod '!ProtoCompiler-gRPCPlugin', '1.12.0'
 end
 
 pre_install do
-  grpc_swift_version='0.4.1'
+  grpc_swift_version='0.4.3'
 
   system <<-CMD
   git clone --branch #{grpc_swift_version} 'https://github.com/grpc/grpc-swift'
