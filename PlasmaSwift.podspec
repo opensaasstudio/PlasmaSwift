@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
     ss.source_files = '*.pbrpc.{h,m}'
     ss.header_mappings_dir = '.'
     ss.requires_arc = true
-    ss.dependency 'gRPC-ProtoRPC', '~> 1.9.1'
+    ss.dependency 'gRPC-ProtoRPC', '1.13.0-pre1'
     ss.dependency "#{s.name}/Messages"
   end
 

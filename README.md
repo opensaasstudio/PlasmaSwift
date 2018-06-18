@@ -19,14 +19,7 @@ pod "PlasmaSwift"
 
 ## Development
 
-To compile Proto, please install grpc to use the protoc command.  
-grpc installation via Homebrew is the following.  
-```bash
-brew tap grpc/grpc
-brew install --with-plugins grpc
-```
-
-and run following command to update compiled proto files.  
+Run following command to update compiled proto files.  
 ```bash
 pod install
 ```
