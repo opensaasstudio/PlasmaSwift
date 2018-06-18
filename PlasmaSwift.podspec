@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.source_files = 'PlasmaSwift/**/*.{h,swift}'
 
   s.subspec 'Messages' do |ms|
-    ms.source_files = '*.pbobjc.{h,m}'
+    ms.source_files = '*.pb.swift'
     ms.header_mappings_dir = '.'
     ms.requires_arc = false
     ms.dependency 'Protobuf', '~> 3.5.0'
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'Services' do |ss|
-    ss.source_files = '*.pbrpc.{h,m}'
+    ss.source_files = '*.grpc.swift'
     ss.header_mappings_dir = '.'
     ss.requires_arc = true
     ss.dependency 'gRPC-ProtoRPC', '~> 1.9.1'
