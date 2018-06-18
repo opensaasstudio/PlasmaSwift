@@ -40,7 +40,7 @@ DEPENDENCIES:
   - "!ProtoCompiler-gRPCPlugin (= 1.9.1)"
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - "!ProtoCompiler"
     - "!ProtoCompiler-gRPCPlugin"
     - BoringSSL
@@ -62,6 +62,6 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
 
-PODFILE CHECKSUM: fdbfd34e048571dc10b3026f54cfa9a1bc3a2659
+PODFILE CHECKSUM: f2b16fda6e69a62f30b9a050be04358f8fb177ba
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3
