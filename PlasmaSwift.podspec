@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
     ss.source_files = '*.grpc.swift'
     ss.header_mappings_dir = '.'
     ss.requires_arc = true
-    ss.dependency 'gRPC-ProtoRPC', '~> 1.9.1'
+    ss.dependency 'SwiftGRPC', '0.4.3'
     ss.dependency "#{s.name}/Messages"
   end
 
