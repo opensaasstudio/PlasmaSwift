@@ -40,14 +40,26 @@ public extension PlasmaClient {
                 subscribe(events: events, eventHandler: eventHandler)
             }
             
+            func subscribeReceiveMessage(_ eventHandler: @escaping EventHandler) {
+                do {
+                    try protoCall.receive { [weak self] result in
+                        eventHandler(result)
+                        self?.subscribeReceiveMessage(eventHandler)
+                    }
+                } catch let error {
+                    PlasmaClient.log("error = \(error.localizedDescription)")
+                }
+            }
+            
             func subscribe(events: [Proto_EventType], eventHandler: @escaping EventHandler) {
                 guard !events.isEmpty else { return }
                 do {
                     try protoCall.send(Proto_Request(events: events))
-                    try protoCall.receive(completion: eventHandler)
                 } catch let error {
                     PlasmaClient.log("error = \(error.localizedDescription)")
                 }
+                
+                subscribeReceiveMessage(eventHandler)
             }
             
             func cancel() {
@@ -199,4 +211,3 @@ private final class Atomic<Value> {
         }
     }
 }
-
