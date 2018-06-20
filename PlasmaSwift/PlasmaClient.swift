@@ -113,9 +113,8 @@ public extension PlasmaClient {
                     switch result {
                     case .value(let payload):
                         PlasmaClient.log("received payload = \(payload)")
-                        self?.eventHandler(.value(payload))
                         
-                    case .error(let error) where (error as? RPCError)?.callResult?.statusCode == .unavailable && retry > 0:
+                    case .error(let error as RPCError) where error.callResult?.statusCode == .unavailable && retry > 0:
                         PlasmaClient.log("stream service is gone. \(error.localizedDescription)")
                         self?.reconnectQueue.asyncAfter(deadline: .now() + 5) {
                             PlasmaClient.log("trying to reconnect... eventTypes=\(String(describing: self?.events.map { $0.type }))")
@@ -125,7 +124,6 @@ public extension PlasmaClient {
                         
                     case .error(let error):
                         PlasmaClient.log("error = \(error.localizedDescription)")
-                        self?.eventHandler(.error(error))
                     }
                     
                     self?.eventHandler(result)
