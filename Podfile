@@ -4,21 +4,33 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'PlasmaSwift' do
-  pod '!ProtoCompiler-gRPCPlugin', '1.9.1'
+  pod '!ProtoCompiler-gRPCPlugin', '1.12.0'
+end
+
+pre_install do
+  grpc_swift_version='0.4.3'
+
+  system <<-CMD
+  git clone --branch #{grpc_swift_version} 'https://github.com/grpc/grpc-swift'
+  cd grpc-swift
+  make
+  cd ..
+  CMD
 end
 
 post_install do
   pods_root = "Pods"
   protoc_dir = "#{pods_root}/!ProtoCompiler"
   protoc = "#{protoc_dir}/protoc"
-  plugin = "#{pods_root}/!ProtoCompiler-gRPCPlugin/grpc_objective_c_plugin"
+  plugin = "grpc-swift/.build/debug"
   proto_dir = "proto"
 
   system <<-CMD
 "#{protoc}" \\
-  --plugin=protoc-gen-grpc="#{plugin}" \\
-  --objc_out=. \\
-  --grpc_out=. \\
+  --plugin="#{plugin}" \\
+  --swift_opt=Visibility=Public \\
+  --swift_out=. \\
+  --swiftgrpc_out=Visibility=Public,Client=true,Server=false:. \\
   -I #{proto_dir} \\
   -I #{protoc_dir} \\
   #{proto_dir}/stream.proto

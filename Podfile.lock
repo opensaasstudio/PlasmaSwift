@@ -1,34 +1,34 @@
 PODS:
   - "!ProtoCompiler (3.5.0)":
     - Protobuf (~> 3.0)
-  - "!ProtoCompiler-gRPCPlugin (1.9.1)":
+  - "!ProtoCompiler-gRPCPlugin (1.12.0)":
     - "!ProtoCompiler (= 3.5.0)"
-    - gRPC-ProtoRPC (= 1.9.1)
-  - BoringSSL (9.2):
-    - BoringSSL/Implementation (= 9.2)
-    - BoringSSL/Interface (= 9.2)
-  - BoringSSL/Implementation (9.2):
-    - BoringSSL/Interface (= 9.2)
-  - BoringSSL/Interface (9.2)
-  - gRPC (1.9.1):
-    - gRPC-RxLibrary (= 1.9.1)
-    - gRPC/Main (= 1.9.1)
-  - gRPC-Core (1.9.1):
-    - gRPC-Core/Implementation (= 1.9.1)
-    - gRPC-Core/Interface (= 1.9.1)
-  - gRPC-Core/Implementation (1.9.1):
-    - BoringSSL (~> 9.0)
-    - gRPC-Core/Interface (= 1.9.1)
+    - gRPC-ProtoRPC (= 1.12.0)
+  - BoringSSL (10.0.5):
+    - BoringSSL/Implementation (= 10.0.5)
+    - BoringSSL/Interface (= 10.0.5)
+  - BoringSSL/Implementation (10.0.5):
+    - BoringSSL/Interface (= 10.0.5)
+  - BoringSSL/Interface (10.0.5)
+  - gRPC (1.12.0):
+    - gRPC-RxLibrary (= 1.12.0)
+    - gRPC/Main (= 1.12.0)
+  - gRPC-Core (1.12.0):
+    - gRPC-Core/Implementation (= 1.12.0)
+    - gRPC-Core/Interface (= 1.12.0)
+  - gRPC-Core/Implementation (1.12.0):
+    - BoringSSL (~> 10.0)
+    - gRPC-Core/Interface (= 1.12.0)
     - nanopb (~> 0.3)
-  - gRPC-Core/Interface (1.9.1)
-  - gRPC-ProtoRPC (1.9.1):
-    - gRPC (= 1.9.1)
-    - gRPC-RxLibrary (= 1.9.1)
+  - gRPC-Core/Interface (1.12.0)
+  - gRPC-ProtoRPC (1.12.0):
+    - gRPC (= 1.12.0)
+    - gRPC-RxLibrary (= 1.12.0)
     - Protobuf (~> 3.0)
-  - gRPC-RxLibrary (1.9.1)
-  - gRPC/Main (1.9.1):
-    - gRPC-Core (= 1.9.1)
-    - gRPC-RxLibrary (= 1.9.1)
+  - gRPC-RxLibrary (1.12.0)
+  - gRPC/Main (1.12.0):
+    - gRPC-Core (= 1.12.0)
+    - gRPC-RxLibrary (= 1.12.0)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
@@ -37,10 +37,10 @@ PODS:
   - Protobuf (3.6.0)
 
 DEPENDENCIES:
-  - "!ProtoCompiler-gRPCPlugin (= 1.9.1)"
+  - "!ProtoCompiler-gRPCPlugin (= 1.12.0)"
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - "!ProtoCompiler"
     - "!ProtoCompiler-gRPCPlugin"
     - BoringSSL
@@ -53,15 +53,15 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   "!ProtoCompiler": 3e9dc8340c8f1bbab40aa0f5acb965a4be02f849
-  "!ProtoCompiler-gRPCPlugin": 943e2945da1ff8077882d0ddb966811c3c6d6123
-  BoringSSL: f3d6b8ce199b9c450a8cfc14895d07a2627fc232
-  gRPC: 58828d611419d49da19ad02a60679ffa10a10a87
-  gRPC-Core: 66413bf1f2d038a6221bc7bfcbeeaa5a117cee29
-  gRPC-ProtoRPC: f29e8b7445e0d3c0311678ab121e6c164da4ca5e
-  gRPC-RxLibrary: 8e0067bfe8a054022c7a81470baace4f2f633b48
+  "!ProtoCompiler-gRPCPlugin": 6f829fc44faf551947dc9f99452e2ed981497718
+  BoringSSL: cf3f1793eb6e3c445c4d150456341f149c268a35
+  gRPC: 9362451032695e2dfb7bafcd3740e3a27939e4ff
+  gRPC-Core: 9696b220565b283e021cf2722d473a4a74b7622a
+  gRPC-ProtoRPC: a1bd56fb1991a8dae4581250d7259eddabb66779
+  gRPC-RxLibrary: 1ed5314e8b38cd6e55c9bfa048387136ae925ce9
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
 
-PODFILE CHECKSUM: fdbfd34e048571dc10b3026f54cfa9a1bc3a2659
+PODFILE CHECKSUM: e9d99960d20bf53cc98ccaf32e243cd03e415ec5
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3
