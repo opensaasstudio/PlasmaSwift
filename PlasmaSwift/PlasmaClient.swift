@@ -54,8 +54,12 @@ public extension PlasmaClient {
             }
             
             func cancel() {
-                try! protoCall.send(Proto_Request(forceClose: true))
-                protoCall.cancel()
+                do {
+                    try protoCall.send(Proto_Request(forceClose: true))
+                    protoCall.cancel()
+                } catch let error {
+                    PlasmaClient.log("error = \(error.localizedDescription)")
+                }
             }
         }
         private let reconnectQueue: DispatchQueue = .init(label: "io.github.openfresh.plasma.reconnectQueue")
