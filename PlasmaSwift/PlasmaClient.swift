@@ -2,7 +2,11 @@ import SwiftGRPC
 import SwiftProtobuf
 
 public final class PlasmaClient {
-    public typealias EventHandler = (ResultOrRPCError<Proto_Payload?>) -> Void
+    public enum Result {
+        case value(Proto_Payload?)
+        case error(Error)
+    }
+    public typealias EventHandler = (Result) -> Void
     
     public static var isDebugLogEnabled = false
     
@@ -24,33 +28,43 @@ public extension PlasmaClient {
     public final class Connection {
         private final class Call {
             private let protoCall: Proto_StreamServiceEventsCall
+            private let eventHandler: EventHandler
             
             init(service: Proto_StreamServiceServiceClient, events: [Proto_EventType], eventHandler: @escaping EventHandler) {
                 service.timeout = .greatestFiniteMagnitude
                 protoCall = try! service.events(completion: nil)
-                subscribe(events: events, eventHandler: eventHandler)
+                self.eventHandler = eventHandler
+                subscribe(events: events)
             }
             
-            func subscribeReceiveMessage(_ eventHandler: @escaping EventHandler) {
+            func subscribeReceiveMessage() {
                 do {
                     try protoCall.receive { [weak self] result in
-                        eventHandler(result)
-                        self?.subscribeReceiveMessage(eventHandler)
+                        switch result {
+                        case .result(let payload):
+                            self?.eventHandler(.value(payload))
+                            
+                        case .error(let error):
+                            self?.eventHandler(.error(error))
+                        }
+                        self?.subscribeReceiveMessage()
                     }
                 } catch let error {
                     PlasmaClient.log("error = \(error.localizedDescription)")
+                    eventHandler(.error(error))
                 }
             }
             
-            func subscribe(events: [Proto_EventType], eventHandler: @escaping EventHandler) {
+            func subscribe(events: [Proto_EventType]) {
                 guard !events.isEmpty else { return }
                 do {
                     try protoCall.send(Proto_Request(events: events))
                 } catch let error {
                     PlasmaClient.log("error = \(error.localizedDescription)")
+                    eventHandler(.error(error))
                 }
                 
-                subscribeReceiveMessage(eventHandler)
+                subscribeReceiveMessage()
             }
             
             func cancel() {
@@ -59,6 +73,7 @@ public extension PlasmaClient {
                     protoCall.cancel()
                 } catch let error {
                     PlasmaClient.log("error = \(error.localizedDescription)")
+                    eventHandler(.error(error))
                 }
             }
         }
@@ -79,13 +94,11 @@ public extension PlasmaClient {
         @discardableResult
         public func subscribe(types: [String]) -> Self {
             let events = types.map(Proto_EventType.init(type:))
-            let handler = eventHandler
             call.withValue { call in
-                call?.subscribe(events: events, eventHandler: handler)
+                call?.subscribe(events: events)
                 self.events = events
             }
             PlasmaClient.log("sent subscribed events \(types) to plasma")
-            
             return self
         }
         
@@ -98,13 +111,10 @@ public extension PlasmaClient {
             call.modify { call in
                 call = Call(service: service, events: events) { [weak self] result in
                     switch result {
-                    case .result(let payload?):
+                    case .value(let payload):
                         PlasmaClient.log("received payload = \(payload)")
                         
-                    case .result:
-                        break
-                        
-                    case .error(let error) where error.callResult?.statusCode == .unavailable && retry > 0:
+                    case .error(let error as RPCError) where error.callResult?.statusCode == .unavailable && retry > 0:
                         PlasmaClient.log("stream service is gone. \(error.localizedDescription)")
                         self?.reconnectQueue.asyncAfter(deadline: .now() + 5) {
                             PlasmaClient.log("trying to reconnect... eventTypes=\(String(describing: self?.events.map { $0.type }))")
