@@ -1,5 +1,3 @@
-import Foundation
-import GRPCClient
 import SwiftGRPC
 import SwiftProtobuf
 
@@ -11,14 +9,6 @@ public final class PlasmaClient {
     private let host: String
     private let port: Int
     private lazy var service: Proto_StreamServiceServiceClient = .init(address: "\(host):\(port)")
-    
-    public static func useInsecureConnections(forHost host: String) {
-        GRPCCall.useInsecureConnections(forHost: host)
-    }
-    
-    public static func setTLSPEMRootCerts(pemRootCert: String, forHost host: String) throws {
-        try GRPCCall.setTLSPEMRootCerts(pemRootCert, forHost: host)
-    }
     
     public init(host: String, port: Int) {
         self.host = host
@@ -36,6 +26,7 @@ public extension PlasmaClient {
             private let protoCall: Proto_StreamServiceEventsCall
             
             init(service: Proto_StreamServiceServiceClient, events: [Proto_EventType], eventHandler: @escaping EventHandler) {
+                service.timeout = .greatestFiniteMagnitude
                 protoCall = try! service.events(completion: nil)
                 subscribe(events: events, eventHandler: eventHandler)
             }
