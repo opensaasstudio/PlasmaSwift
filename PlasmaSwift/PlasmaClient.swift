@@ -3,7 +3,7 @@ import SwiftProtobuf
 
 public final class PlasmaClient {
     public enum Result {
-        case value(Proto_Payload?)
+        case value(Proto_Payload)
         case error(Error)
     }
     public typealias EventHandler = (Result) -> Void
@@ -41,8 +41,11 @@ public extension PlasmaClient {
                 do {
                     try protoCall.receive { [weak self] result in
                         switch result {
-                        case .result(let payload):
+                        case .result(let payload?):
                             self?.eventHandler(.value(payload))
+                            
+                        case .result:
+                            return
                             
                         case .error(let error):
                             self?.eventHandler(.error(error))
