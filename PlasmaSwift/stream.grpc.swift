@@ -25,16 +25,16 @@ import Dispatch
 import SwiftGRPC
 import SwiftProtobuf
 
-public protocol Proto_StreamServiceEventsCall: ClientCallBidirectionalStreaming {
+public protocol PlasmaStreamServiceEventsCall: ClientCallBidirectionalStreaming {
   /// Do not call this directly, call `receive()` in the protocol extension below instead.
-  func _receive(timeout: DispatchTime) throws -> Proto_Payload?
+  func _receive(timeout: DispatchTime) throws -> PlasmaPayload?
   /// Call this to wait for a result. Nonblocking.
-  func receive(completion: @escaping (ResultOrRPCError<Proto_Payload?>) -> Void) throws
+  func receive(completion: @escaping (ResultOrRPCError<PlasmaPayload?>) -> Void) throws
 
   /// Send a message to the stream. Nonblocking.
-  func send(_ message: Proto_Request, completion: @escaping (Error?) -> Void) throws
+  func send(_ message: PlasmaRequest, completion: @escaping (Error?) -> Void) throws
   /// Do not call this directly, call `send()` in the protocol extension below instead.
-  func _send(_ message: Proto_Request, timeout: DispatchTime) throws
+  func _send(_ message: PlasmaRequest, timeout: DispatchTime) throws
 
   /// Call this to close the sending connection. Blocking.
   func closeSend() throws
@@ -42,36 +42,36 @@ public protocol Proto_StreamServiceEventsCall: ClientCallBidirectionalStreaming 
   func closeSend(completion: (() -> Void)?) throws
 }
 
-public extension Proto_StreamServiceEventsCall {
+public extension PlasmaStreamServiceEventsCall {
   /// Call this to wait for a result. Blocking.
-  func receive(timeout: DispatchTime = .distantFuture) throws -> Proto_Payload? { return try self._receive(timeout: timeout) }
+  func receive(timeout: DispatchTime = .distantFuture) throws -> PlasmaPayload? { return try self._receive(timeout: timeout) }
 }
 
-public extension Proto_StreamServiceEventsCall {
+public extension PlasmaStreamServiceEventsCall {
   /// Send a message to the stream and wait for the send operation to finish. Blocking.
-  func send(_ message: Proto_Request, timeout: DispatchTime = .distantFuture) throws { try self._send(message, timeout: timeout) }
+  func send(_ message: PlasmaRequest, timeout: DispatchTime = .distantFuture) throws { try self._send(message, timeout: timeout) }
 }
 
-fileprivate final class Proto_StreamServiceEventsCallBase: ClientCallBidirectionalStreamingBase<Proto_Request, Proto_Payload>, Proto_StreamServiceEventsCall {
+fileprivate final class PlasmaStreamServiceEventsCallBase: ClientCallBidirectionalStreamingBase<PlasmaRequest, PlasmaPayload>, PlasmaStreamServiceEventsCall {
   override class var method: String { return "/proto.StreamService/Events" }
 }
 
 
-/// Instantiate Proto_StreamServiceServiceClient, then call methods of this protocol to make API calls.
-public protocol Proto_StreamServiceService: ServiceClient {
+/// Instantiate PlasmaStreamServiceServiceClient, then call methods of this protocol to make API calls.
+public protocol PlasmaStreamServiceService: ServiceClient {
   /// Asynchronous. Bidirectional-streaming.
   /// Use methods on the returned object to stream messages,
   /// to wait for replies, and to close the connection.
-  func events(completion: ((CallResult) -> Void)?) throws -> Proto_StreamServiceEventsCall
+  func events(completion: ((CallResult) -> Void)?) throws -> PlasmaStreamServiceEventsCall
 
 }
 
-public final class Proto_StreamServiceServiceClient: ServiceClientBase, Proto_StreamServiceService {
+public final class PlasmaStreamServiceServiceClient: ServiceClientBase, PlasmaStreamServiceService {
   /// Asynchronous. Bidirectional-streaming.
   /// Use methods on the returned object to stream messages,
   /// to wait for replies, and to close the connection.
-  public func events(completion: ((CallResult) -> Void)?) throws -> Proto_StreamServiceEventsCall {
-    return try Proto_StreamServiceEventsCallBase(channel)
+  public func events(completion: ((CallResult) -> Void)?) throws -> PlasmaStreamServiceEventsCall {
+    return try PlasmaStreamServiceEventsCallBase(channel)
       .start(metadata: metadata, completion: completion)
   }
 

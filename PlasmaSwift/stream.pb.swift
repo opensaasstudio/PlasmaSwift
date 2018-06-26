@@ -19,12 +19,12 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
-public struct Proto_Request {
+public struct PlasmaRequest {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var events: [Proto_EventType] = []
+  public var events: [PlasmaEventType] = []
 
   public var forceClose: Bool = false
 
@@ -33,7 +33,7 @@ public struct Proto_Request {
   public init() {}
 }
 
-public struct Proto_EventType {
+public struct PlasmaEventType {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
@@ -45,13 +45,13 @@ public struct Proto_EventType {
   public init() {}
 }
 
-public struct Proto_Payload {
+public struct PlasmaPayload {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var eventType: Proto_EventType {
-    get {return _storage._eventType ?? Proto_EventType()}
+  public var eventType: PlasmaEventType {
+    get {return _storage._eventType ?? PlasmaEventType()}
     set {_uniqueStorage()._eventType = newValue}
   }
   /// Returns true if `eventType` has been explicitly set.
@@ -75,7 +75,7 @@ public struct Proto_Payload {
 
 fileprivate let _protobuf_package = "proto"
 
-extension Proto_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+extension PlasmaRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Request"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "Events"),
@@ -102,7 +102,7 @@ extension Proto_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public func _protobuf_generated_isEqualTo(other: Proto_Request) -> Bool {
+  public func _protobuf_generated_isEqualTo(other: PlasmaRequest) -> Bool {
     if self.events != other.events {return false}
     if self.forceClose != other.forceClose {return false}
     if unknownFields != other.unknownFields {return false}
@@ -110,7 +110,7 @@ extension Proto_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
   }
 }
 
-extension Proto_EventType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+extension PlasmaEventType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".EventType"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "type"),
@@ -132,14 +132,14 @@ extension Proto_EventType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public func _protobuf_generated_isEqualTo(other: Proto_EventType) -> Bool {
+  public func _protobuf_generated_isEqualTo(other: PlasmaEventType) -> Bool {
     if self.type != other.type {return false}
     if unknownFields != other.unknownFields {return false}
     return true
   }
 }
 
-extension Proto_Payload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
+extension PlasmaPayload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = _protobuf_package + ".Payload"
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "eventType"),
@@ -147,7 +147,7 @@ extension Proto_Payload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
   ]
 
   fileprivate class _StorageClass {
-    var _eventType: Proto_EventType? = nil
+    var _eventType: PlasmaEventType? = nil
     var _data: String = String()
 
     static let defaultInstance = _StorageClass()
@@ -192,7 +192,7 @@ extension Proto_Payload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public func _protobuf_generated_isEqualTo(other: Proto_Payload) -> Bool {
+  public func _protobuf_generated_isEqualTo(other: PlasmaPayload) -> Bool {
     if _storage !== other._storage {
       let storagesAreEqual: Bool = withExtendedLifetime((_storage, other._storage)) { (_args: (_StorageClass, _StorageClass)) in
         let _storage = _args.0
