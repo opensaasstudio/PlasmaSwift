@@ -2,11 +2,6 @@
 
 set -e
 
-if [[ `uname` != "Darwin" ]]; then
-     echo "Unsupported OS (`uname`)"
-     exit 1
-fi
-
 PROTOC_VERSION="3.6.0"
 PLUGIN_VERSION="0.4.3"
 
@@ -25,6 +20,11 @@ PLUGIN_BUILD_DIR="${PLUGIN_DIR}/.build/debug"
 PROTOC="${VENDOR_DIR}/bin/protoc"
 PROTOC_GEN_SWIFT="${PLUGIN_BUILD_DIR}/protoc-gen-swift"
 PROTOC_GEN_SWIFT_GRPC="${PLUGIN_BUILD_DIR}/protoc-gen-swiftgrpc"
+
+if [[ `uname` != "Darwin" ]]; then
+     echo "Unsupported OS (`uname`)"
+     exit 1
+fi
 
 if [ ! -e $PROTOC ]; then
 
