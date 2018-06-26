@@ -23,6 +23,11 @@ public final class PlasmaClient {
     public func connect(_ eventHandler: @escaping (Event) -> Void) -> Connection {
         return .init(service: service, eventHandler: eventHandler)
     }
+
+    @discardableResult
+    public func subscribe(eventTypes: [String], _ eventHandler: @escaping (Event) -> Void) -> Connection {
+        return connect(eventHandler).subscribe(eventTypes: eventTypes)
+    }
 }
 
 public extension PlasmaClient {
@@ -45,15 +50,15 @@ public extension PlasmaClient {
         }
         
         @discardableResult
-        public func subscribe(types: [String]) -> Self {
+        public func subscribe(eventTypes: [String]) -> Self {
             callLock.lock()
             defer { callLock.unlock() }
 
-            let events = types.map(PlasmaEventType.init)
+            let events = eventTypes.map(PlasmaEventType.init)
             call?.subscribe(events: events)
             self.events = events
 
-            PlasmaClient.log("sent subscribed events \(types) to plasma")
+            PlasmaClient.log("sent subscribed events \(eventTypes) to plasma")
             return self
         }
         
