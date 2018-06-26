@@ -1,6 +1,5 @@
 # OS X
 .DS_Store
-grpc-swift
 
 # Xcode
 build/
@@ -20,6 +19,7 @@ DerivedData
 *.hmap
 *.ipa
 
-Pods/
-PlasmaSwift-Demo/Pods/
+# Product
+PlasmaSwift-Demo/Pods
 PlasmaSwift-Demo/Podfile.lock
+vendor
