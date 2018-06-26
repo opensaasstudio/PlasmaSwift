@@ -9,15 +9,15 @@ final class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        PlasmaClient.useInsecureConnections(forHost: "localhost:50051")
-        
-        let connection = PlasmaClient(host: "localhost", port: 50051).connect { [weak self] (result, payload, error) in
+
+        let connection = PlasmaClient(host: "localhost", port: 50051).connect { [weak self] result in
             DispatchQueue.main.async {
-                if let err = error {
-                    self?.label.text = err.localizedDescription
-                } else {
-                    self?.label.text = payload?.data_p
+                switch result {
+                case .next(let payload):
+                    self?.label.text = payload.data
+
+                case .error(let error):
+                    self?.label.text = error.localizedDescription
                 }
             }
         }
