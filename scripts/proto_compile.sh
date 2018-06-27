@@ -2,69 +2,79 @@
 
 set -eu
 
-PROTOC_VERSION="3.6.0"
+COMPILER_VERSION="3.6.0"
 PLUGIN_VERSION="0.4.3"
-
-PROTO=${1:?"set the path to proto as the first arg"}
+PROTO_VERSION="0.2.3"
 
 VENDOR_DIR="./vendor"
 OUTPUT_DIR="./PlasmaSwift"
-BUILD_LOG_DIR="${VENDOR_DIR}/plugins_build.log"
 
-PROTOC_ZIP_NAME="protoc-${PROTOC_VERSION}-osx-x86_64.zip"
-PROTOC_BIN_ZIP_URL="https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP_NAME}"
-PROTOC_ZIP="${VENDOR_DIR}/${PROTOC_ZIP_NAME}"
+COMPILER_ZIP_NAME="protoc-${COMPILER_VERSION}-osx-x86_64.zip"
+COMPILER_BIN_ZIP_URL="https://github.com/google/protobuf/releases/download/v${COMPILER_VERSION}/${COMPILER_ZIP_NAME}"
+COMPILER_ZIP="${VENDOR_DIR}/${COMPILER_ZIP_NAME}"
 
-PLUGIN_REPO="https://github.com/grpc/grpc-swift.git"
-PLUGIN_DIR="${VENDOR_DIR}/grpc-swift"
-PLUGIN_BUILD_DIR="${PLUGIN_DIR}/.build/debug"
+PLUGIN_REPO_GIT="https://github.com/grpc/grpc-swift.git"
+PLUGIN_REPO_DIR="${VENDOR_DIR}/grpc-swift"
+PLUGIN_DIR="${PLUGIN_REPO_DIR}/.build/debug"
 
-PROTOC="${VENDOR_DIR}/bin/protoc"
-PROTOC_GEN_SWIFT="${PLUGIN_BUILD_DIR}/protoc-gen-swift"
-PROTOC_GEN_SWIFT_GRPC="${PLUGIN_BUILD_DIR}/protoc-gen-swiftgrpc"
+PROTO_REPO_GIT="https://github.com/openfresh/plasma.git"
+PROTO_REPO_DIR="${VENDOR_DIR}/plasma"
+PROTO_DIR="${PROTO_REPO_DIR}/protobuf"
+
+COMPILER="${VENDOR_DIR}/bin/protoc"
+BUILD_LOG="${VENDOR_DIR}/plugins_build.log"
+PROTOC_GEN_SWIFT="${PLUGIN_DIR}/protoc-gen-swift"
+PROTOC_GEN_SWIFT_GRPC="${PLUGIN_DIR}/protoc-gen-swiftgrpc"
+PROTO="${PROTO_DIR}/stream.proto"
 
 if [[ `uname` != "Darwin" ]]; then
-     echo "unsupported OS (`uname`)"
+     echo "Unsupported OS (`uname`)"
      exit 1
 fi
 
-if [ ! -e $PROTO ]; then
-    echo "proto file is missing..."
-    exit 1
-fi
+if [ ! -e $COMPILER ]; then
+    echo "Download protoc from '$COMPILER_BIN_ZIP_URL'"
+    echo -n "....."
 
-if [ ! -e $PROTOC ]; then
+    wget -nc -P $VENDOR_DIR $COMPILER_BIN_ZIP_URL 2>/dev/null
+    unzip -oq -d ${VENDOR_DIR} $COMPILER_ZIP
 
-    echo -n "download protoc..."
-
-    wget -nc -P $VENDOR_DIR $PROTOC_BIN_ZIP_URL 2>/dev/null
-    unzip -oq -d ${VENDOR_DIR} $PROTOC_ZIP
-
-    echo "done"
-
+    echo -e "Done\n"
 fi
 
 if [[ ! -e $PROTOC_GEN_SWIFT || ! -e $PROTOC_GEN_SWIFT_GRPC ]]; then
+    echo "Clone plugins from '$PLUGIN_REPO_GIT'"
+    echo -n "....."
 
-    echo -n "clone plugins..."
+    git clone --depth 1 -b $PLUGIN_VERSION $PLUGIN_REPO_GIT $PLUGIN_REPO_DIR 2>/dev/null && :
 
-    git clone --depth 1 -b $PLUGIN_VERSION $PLUGIN_REPO $PLUGIN_DIR 2>/dev/null && :
+    echo -e "Done\n"
 
-    echo "done"
-    echo -n "build plugins...build log output to '$(cd $(dirname $0); pwd)'..."
+    echo "Build plugins"
+    echo "Build log output to '$(cd $(dirname $BUILD_LOG); pwd)/$(basename $BUILD_LOG)''"
+    echo -n "....."
 
-    swift build -Xcc -ISources/BoringSSL/include -Xlinker -lz --package-path $PLUGIN_DIR > $BUILD_LOG_DIR
+    swift build -Xcc -ISources/BoringSSL/include -Xlinker -lz --package-path $PLUGIN_REPO_DIR > $BUILD_LOG
 
-    echo "done"
-
+    echo -e "Done\n"
 fi
 
-echo -n "compile proto..."
+if [ ! -e $PROTO ]; then
+    echo "Clone proto from '$PROTO_REPO_GIT'"
+    echo -n "....."
 
-PATH=$PLUGIN_BUILD_DIR $PROTOC $PROTO \
-  -I $(dirname $PROTO) \
+    git clone --depth 1 -b $PROTO_VERSION $PROTO_REPO_GIT $PROTO_REPO_DIR 2>/dev/null && :
+
+    echo -e "Done\n"
+fi
+
+echo "Compile proto"
+echo -n "....."
+
+PATH=$PLUGIN_DIR $COMPILER $PROTO \
+  -I $PROTO_DIR \
   --swift_opt=Visibility=Public \
   --swift_out=$OUTPUT_DIR \
   --swiftgrpc_out=Server=false:$OUTPUT_DIR
 
-echo "done"
+echo "Done"
