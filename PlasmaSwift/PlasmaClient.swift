@@ -12,7 +12,7 @@ public final class PlasmaClient {
     private let service: PlasmaStreamServiceServiceClient
     
     public init(host: String, port: Int, secure: Bool = true) {
-        self.service = .init(address: "\(host):\(port)", secure: secure)
+        service = .init(address: "\(host):\(port)", secure: secure)
     }
 
     public init(host: String, port: Int, certificates: String) {

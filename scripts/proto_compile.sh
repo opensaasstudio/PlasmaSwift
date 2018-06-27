@@ -54,6 +54,6 @@ PATH=$PLUGIN_BUILD_DIR $PROTOC "${PROTO_DIR}/stream.proto" \
   -I $PROTO_DIR \
   --swift_opt=Visibility=Public \
   --swift_out=$OUTPUT_DIR \
-  --swiftgrpc_out=Visibility=Public,Client=true,Server=false:$OUTPUT_DIR
+  --swiftgrpc_out=Server=false:$OUTPUT_DIR
 
 echo "Done"

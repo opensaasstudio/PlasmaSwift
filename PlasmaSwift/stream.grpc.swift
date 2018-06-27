@@ -25,7 +25,7 @@ import Dispatch
 import SwiftGRPC
 import SwiftProtobuf
 
-public protocol PlasmaStreamServiceEventsCall: ClientCallBidirectionalStreaming {
+internal protocol PlasmaStreamServiceEventsCall: ClientCallBidirectionalStreaming {
   /// Do not call this directly, call `receive()` in the protocol extension below instead.
   func _receive(timeout: DispatchTime) throws -> PlasmaPayload?
   /// Call this to wait for a result. Nonblocking.
@@ -42,12 +42,12 @@ public protocol PlasmaStreamServiceEventsCall: ClientCallBidirectionalStreaming 
   func closeSend(completion: (() -> Void)?) throws
 }
 
-public extension PlasmaStreamServiceEventsCall {
+internal extension PlasmaStreamServiceEventsCall {
   /// Call this to wait for a result. Blocking.
   func receive(timeout: DispatchTime = .distantFuture) throws -> PlasmaPayload? { return try self._receive(timeout: timeout) }
 }
 
-public extension PlasmaStreamServiceEventsCall {
+internal extension PlasmaStreamServiceEventsCall {
   /// Send a message to the stream and wait for the send operation to finish. Blocking.
   func send(_ message: PlasmaRequest, timeout: DispatchTime = .distantFuture) throws { try self._send(message, timeout: timeout) }
 }
@@ -58,7 +58,7 @@ fileprivate final class PlasmaStreamServiceEventsCallBase: ClientCallBidirection
 
 
 /// Instantiate PlasmaStreamServiceServiceClient, then call methods of this protocol to make API calls.
-public protocol PlasmaStreamServiceService: ServiceClient {
+internal protocol PlasmaStreamServiceService: ServiceClient {
   /// Asynchronous. Bidirectional-streaming.
   /// Use methods on the returned object to stream messages,
   /// to wait for replies, and to close the connection.
@@ -66,11 +66,11 @@ public protocol PlasmaStreamServiceService: ServiceClient {
 
 }
 
-public final class PlasmaStreamServiceServiceClient: ServiceClientBase, PlasmaStreamServiceService {
+internal final class PlasmaStreamServiceServiceClient: ServiceClientBase, PlasmaStreamServiceService {
   /// Asynchronous. Bidirectional-streaming.
   /// Use methods on the returned object to stream messages,
   /// to wait for replies, and to close the connection.
-  public func events(completion: ((CallResult) -> Void)?) throws -> PlasmaStreamServiceEventsCall {
+  internal func events(completion: ((CallResult) -> Void)?) throws -> PlasmaStreamServiceEventsCall {
     return try PlasmaStreamServiceEventsCallBase(channel)
       .start(metadata: metadata, completion: completion)
   }
