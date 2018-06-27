@@ -2,8 +2,13 @@ import SwiftGRPC
 import SwiftProtobuf
 
 public final class PlasmaClient {
+    public struct Payload {
+        public let data: String
+        public let eventType: String
+    }
+
     public enum Event {
-        case next(payload: PlasmaPayload)
+        case next(payload: Payload)
         case error(Error)
     }
     
@@ -124,18 +129,21 @@ private extension PlasmaClient.Connection {
         func subscribeReceiveMessage() {
             do {
                 try protoCall.receive { [weak self] result in
-                    switch result {
-                    case .result(let payload?):
-                        self?.eventHandler(.next(payload: payload))
+                    guard let `self` = self else { return }
 
-                    case .result(.none):
+                    switch result {
+                    case .result(let payload?) where payload.hasEventType:
+                        let payload = PlasmaClient.Payload(data: payload.data, eventType: payload.eventType.type)
+                        self.eventHandler(.next(payload: payload))
+
+                    case .result:
                         return
 
                     case .error(let error):
-                        self?.eventHandler(.error(error))
+                        self.eventHandler(.error(error))
                     }
 
-                    self?.subscribeReceiveMessage()
+                    self.subscribeReceiveMessage()
                 }
 
             } catch {

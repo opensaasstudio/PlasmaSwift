@@ -73,7 +73,6 @@ echo -n "....."
 
 PATH=$PLUGIN_DIR $COMPILER $PROTO \
   -I $PROTO_DIR \
-  --swift_opt=Visibility=Public \
   --swift_out=$OUTPUT_DIR \
   --swiftgrpc_out=Server=false:$OUTPUT_DIR
 

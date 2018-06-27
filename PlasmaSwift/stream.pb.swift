@@ -19,54 +19,54 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
-public struct PlasmaRequest {
+struct PlasmaRequest {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var events: [PlasmaEventType] = []
+  var events: [PlasmaEventType] = []
 
-  public var forceClose: Bool = false
+  var forceClose: Bool = false
 
-  public var unknownFields = SwiftProtobuf.UnknownStorage()
+  var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  public init() {}
+  init() {}
 }
 
-public struct PlasmaEventType {
+struct PlasmaEventType {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var type: String = String()
+  var type: String = String()
 
-  public var unknownFields = SwiftProtobuf.UnknownStorage()
+  var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  public init() {}
+  init() {}
 }
 
-public struct PlasmaPayload {
+struct PlasmaPayload {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
   // methods supported on all messages.
 
-  public var eventType: PlasmaEventType {
+  var eventType: PlasmaEventType {
     get {return _storage._eventType ?? PlasmaEventType()}
     set {_uniqueStorage()._eventType = newValue}
   }
   /// Returns true if `eventType` has been explicitly set.
-  public var hasEventType: Bool {return _storage._eventType != nil}
+  var hasEventType: Bool {return _storage._eventType != nil}
   /// Clears the value of `eventType`. Subsequent reads from it will return its default value.
-  public mutating func clearEventType() {_storage._eventType = nil}
+  mutating func clearEventType() {_storage._eventType = nil}
 
-  public var data: String {
+  var data: String {
     get {return _storage._data}
     set {_uniqueStorage()._data = newValue}
   }
 
-  public var unknownFields = SwiftProtobuf.UnknownStorage()
+  var unknownFields = SwiftProtobuf.UnknownStorage()
 
-  public init() {}
+  init() {}
 
   fileprivate var _storage = _StorageClass.defaultInstance
 }
@@ -76,13 +76,13 @@ public struct PlasmaPayload {
 fileprivate let _protobuf_package = "proto"
 
 extension PlasmaRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  public static let protoMessageName: String = _protobuf_package + ".Request"
-  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+  static let protoMessageName: String = _protobuf_package + ".Request"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "Events"),
     2: .same(proto: "forceClose"),
   ]
 
-  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
       case 1: try decoder.decodeRepeatedMessageField(value: &self.events)
@@ -92,7 +92,7 @@ extension PlasmaRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     }
   }
 
-  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     if !self.events.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.events, fieldNumber: 1)
     }
@@ -102,7 +102,7 @@ extension PlasmaRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public func _protobuf_generated_isEqualTo(other: PlasmaRequest) -> Bool {
+  func _protobuf_generated_isEqualTo(other: PlasmaRequest) -> Bool {
     if self.events != other.events {return false}
     if self.forceClose != other.forceClose {return false}
     if unknownFields != other.unknownFields {return false}
@@ -111,12 +111,12 @@ extension PlasmaRequest: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
 }
 
 extension PlasmaEventType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  public static let protoMessageName: String = _protobuf_package + ".EventType"
-  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+  static let protoMessageName: String = _protobuf_package + ".EventType"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "type"),
   ]
 
-  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
       case 1: try decoder.decodeSingularStringField(value: &self.type)
@@ -125,14 +125,14 @@ extension PlasmaEventType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     }
   }
 
-  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     if !self.type.isEmpty {
       try visitor.visitSingularStringField(value: self.type, fieldNumber: 1)
     }
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public func _protobuf_generated_isEqualTo(other: PlasmaEventType) -> Bool {
+  func _protobuf_generated_isEqualTo(other: PlasmaEventType) -> Bool {
     if self.type != other.type {return false}
     if unknownFields != other.unknownFields {return false}
     return true
@@ -140,8 +140,8 @@ extension PlasmaEventType: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
 }
 
 extension PlasmaPayload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
-  public static let protoMessageName: String = _protobuf_package + ".Payload"
-  public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+  static let protoMessageName: String = _protobuf_package + ".Payload"
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "eventType"),
     2: .same(proto: "data"),
   ]
@@ -167,7 +167,7 @@ extension PlasmaPayload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     return _storage
   }
 
-  public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
+  mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     _ = _uniqueStorage()
     try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
       while let fieldNumber = try decoder.nextFieldNumber() {
@@ -180,7 +180,7 @@ extension PlasmaPayload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     }
   }
 
-  public func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
+  func traverse<V: SwiftProtobuf.Visitor>(visitor: inout V) throws {
     try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
       if let v = _storage._eventType {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 1)
@@ -192,7 +192,7 @@ extension PlasmaPayload: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     try unknownFields.traverse(visitor: &visitor)
   }
 
-  public func _protobuf_generated_isEqualTo(other: PlasmaPayload) -> Bool {
+  func _protobuf_generated_isEqualTo(other: PlasmaPayload) -> Bool {
     if _storage !== other._storage {
       let storagesAreEqual: Bool = withExtendedLifetime((_storage, other._storage)) { (_args: (_StorageClass, _StorageClass)) in
         let _storage = _args.0
