@@ -1,17 +1,19 @@
 #!/bin/bash
 
-set -e
+set -eu
 
 PROTOC_VERSION="3.6.0"
 PLUGIN_VERSION="0.4.3"
 
+PROTO=${1:?"set the path to proto as the first arg"}
+
 VENDOR_DIR="./vendor"
-PROTO_DIR="./proto"
 OUTPUT_DIR="./PlasmaSwift"
+BUILD_LOG_DIR="${VENDOR_DIR}/plugins_build.log"
 
 PROTOC_ZIP_NAME="protoc-${PROTOC_VERSION}-osx-x86_64.zip"
 PROTOC_BIN_ZIP_URL="https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/${PROTOC_ZIP_NAME}"
-PROTOC_DOWNLOADED_ZIP="${VENDOR_DIR}/${PROTOC_ZIP_NAME}"
+PROTOC_ZIP="${VENDOR_DIR}/${PROTOC_ZIP_NAME}"
 
 PLUGIN_REPO="https://github.com/grpc/grpc-swift.git"
 PLUGIN_DIR="${VENDOR_DIR}/grpc-swift"
@@ -22,38 +24,47 @@ PROTOC_GEN_SWIFT="${PLUGIN_BUILD_DIR}/protoc-gen-swift"
 PROTOC_GEN_SWIFT_GRPC="${PLUGIN_BUILD_DIR}/protoc-gen-swiftgrpc"
 
 if [[ `uname` != "Darwin" ]]; then
-     echo "Unsupported OS (`uname`)"
+     echo "unsupported OS (`uname`)"
      exit 1
+fi
+
+if [ ! -e $PROTO ]; then
+    echo "proto file is missing..."
+    exit 1
 fi
 
 if [ ! -e $PROTOC ]; then
 
-    echo -n "Download protoc..."
+    echo -n "download protoc..."
 
     wget -nc -P $VENDOR_DIR $PROTOC_BIN_ZIP_URL 2>/dev/null
-    unzip -oq -d ${VENDOR_DIR} $PROTOC_DOWNLOADED_ZIP
+    unzip -oq -d ${VENDOR_DIR} $PROTOC_ZIP
 
-echo "Done"
+    echo "done"
 
 fi
 
 if [[ ! -e $PROTOC_GEN_SWIFT || ! -e $PROTOC_GEN_SWIFT_GRPC ]]; then
 
-    echo -n "Build plugins..."
+    echo -n "clone plugins..."
 
     git clone --depth 1 -b $PLUGIN_VERSION $PLUGIN_REPO $PLUGIN_DIR 2>/dev/null && :
-    swift build -Xcc -ISources/BoringSSL/include -Xlinker -lz --package-path $PLUGIN_DIR
 
-    echo "Done"
+    echo "done"
+    echo -n "build plugins...build log output to '$(cd $(dirname $0); pwd)'..."
+
+    swift build -Xcc -ISources/BoringSSL/include -Xlinker -lz --package-path $PLUGIN_DIR > $BUILD_LOG_DIR
+
+    echo "done"
 
 fi
 
-echo -n "Compile proto..."
+echo -n "compile proto..."
 
-PATH=$PLUGIN_BUILD_DIR $PROTOC "${PROTO_DIR}/stream.proto" \
-  -I $PROTO_DIR \
+PATH=$PLUGIN_BUILD_DIR $PROTOC $PROTO \
+  -I $(dirname $PROTO) \
   --swift_opt=Visibility=Public \
   --swift_out=$OUTPUT_DIR \
   --swiftgrpc_out=Server=false:$OUTPUT_DIR
 
-echo "Done"
+echo "done"
