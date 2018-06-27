@@ -17,7 +17,6 @@ public final class PlasmaClient {
 
     public init(host: String, port: Int, certificates: String) {
         service = .init(address: "\(host):\(port)", certificates: certificates)
-        service.timeout = .greatestFiniteMagnitude
     }
     
     public func connect(_ eventHandler: @escaping (Event) -> Void) -> Connection {
@@ -46,6 +45,7 @@ public extension PlasmaClient {
             self.service = service
             self.eventHandler = eventHandler
 
+            service.timeout = .greatestFiniteMagnitude
             connect(retry: 10)
         }
         
