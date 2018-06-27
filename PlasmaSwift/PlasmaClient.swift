@@ -58,7 +58,7 @@ public extension PlasmaClient {
             call?.subscribe(events: events)
             self.events = events
 
-            PlasmaClient.log("sent subscribed events \(eventTypes) to plasma")
+            PlasmaClient.log("subscribed events sent to plasma: \(eventTypes)")
             return self
         }
         
@@ -68,7 +68,7 @@ public extension PlasmaClient {
 
             call?.cancel()
 
-            PlasmaClient.log("closed connection")
+            PlasmaClient.log("connection closed")
         }
         
         private func connect(retry: Int) {
@@ -78,7 +78,7 @@ public extension PlasmaClient {
             call = Call(service: service, events: events) { [weak self] event in
                 switch event {
                 case .next(let payload):
-                    PlasmaClient.log("received payload = \(payload)")
+                    PlasmaClient.log("received payload: \(payload)")
 
                 case .error(let error as RPCError) where error.callResult?.statusCode == .unavailable && retry > 0:
                     PlasmaClient.log("stream service is gone. \(error.localizedDescription)")
@@ -86,7 +86,7 @@ public extension PlasmaClient {
                     return
 
                 case .error(let error):
-                    PlasmaClient.log("error = \(error.localizedDescription)")
+                    PlasmaClient.log("error: \(error.localizedDescription)")
                 }
 
                 self?.eventHandler(event)
@@ -97,7 +97,7 @@ public extension PlasmaClient {
             reconnectQueue.asyncAfter(deadline: .now() + interval) { [weak self] in
                 guard let `self` = self else { return }
 
-                PlasmaClient.log("trying to reconnect... eventTypes = \(self.events.map { $0.type })")
+                PlasmaClient.log("trying to reconnect... eventTypes: \(self.events.map { $0.type })")
                 self.connect(retry: retry)
             }
         }
