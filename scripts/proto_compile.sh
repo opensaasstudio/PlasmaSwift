@@ -9,9 +9,8 @@ PROTO_VERSION="0.2.3"
 VENDOR_DIR="./vendor"
 OUTPUT_DIR="./PlasmaSwift"
 
-COMPILER_ZIP_NAME="protoc-${COMPILER_VERSION}-osx-x86_64.zip"
-COMPILER_BIN_ZIP_URL="https://github.com/google/protobuf/releases/download/v${COMPILER_VERSION}/${COMPILER_ZIP_NAME}"
-COMPILER_ZIP="${VENDOR_DIR}/${COMPILER_ZIP_NAME}"
+COMPILER_ZIP_URL="https://github.com/google/protobuf/releases/download/v${COMPILER_VERSION}/protoc-${COMPILER_VERSION}-osx-x86_64.zip"
+COMPILER_ZIP="${VENDOR_DIR}/$(basename $COMPILER_ZIP_URL)"
 
 PLUGIN_REPO_GIT="https://github.com/grpc/grpc-swift.git"
 PLUGIN_REPO_DIR="${VENDOR_DIR}/grpc-swift"
@@ -32,12 +31,14 @@ if [[ `uname` != "Darwin" ]]; then
      exit 1
 fi
 
+mkdir -p $VENDOR_DIR
+
 if [ ! -e $COMPILER ]; then
-    echo "Download protoc from '$COMPILER_BIN_ZIP_URL'"
+    echo "Download protoc from '$COMPILER_ZIP_URL'"
     echo -n "....."
 
-    wget -nc -P $VENDOR_DIR $COMPILER_BIN_ZIP_URL 2>/dev/null
-    unzip -oq -d ${VENDOR_DIR} $COMPILER_ZIP
+    curl -L -o $COMPILER_ZIP $COMPILER_ZIP_URL 2>/dev/null
+    unzip -oq -d $VENDOR_DIR $COMPILER_ZIP
 
     echo -e "Done\n"
 fi
