@@ -102,7 +102,7 @@ public extension PlasmaClient {
             reconnectQueue.asyncAfter(deadline: .now() + interval) { [weak self] in
                 guard let `self` = self else { return }
 
-                PlasmaClient.log("trying to reconnect... eventTypes: \(self.events.map { $0.type })")
+                PlasmaClient.log("trying to reconnect... remaining: \(retry) times, eventTypes: \(self.events.map { $0.type })")
                 self.connect(retry: retry)
             }
         }
