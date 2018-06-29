@@ -116,7 +116,11 @@ private extension PlasmaClient.Connection {
 
         init?(service: PlasmaStreamServiceServiceClient, events: [PlasmaEventType], eventHandler: @escaping (PlasmaClient.Event) -> Void) {
             do {
-                self.protoCall = try service.events(completion: nil)
+                self.protoCall = try service.events { callResult in
+                    if callResult.statusCode == .unavailable {
+                        eventHandler(.error(RPCError.callError(callResult)))
+                    }
+                }
                 self.eventHandler = eventHandler
                 subscribe(events: events)
 
