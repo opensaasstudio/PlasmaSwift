@@ -24,13 +24,13 @@ public final class PlasmaClient {
         service = .init(address: "\(host):\(port)", certificates: certificates)
     }
     
-    public func connect(_ eventHandler: @escaping (Event) -> Void) -> Connection {
-        return .init(service: service, eventHandler: eventHandler)
+    public func connect(retryCount: Int = 10, eventHandler: @escaping (Event) -> Void) -> Connection {
+        return .init(service: service, retryCount: retryCount, eventHandler: eventHandler)
     }
 
     @discardableResult
-    public func subscribe(eventTypes: [String], _ eventHandler: @escaping (Event) -> Void) -> Connection {
-        return connect(eventHandler).subscribe(eventTypes: eventTypes)
+    public func subscribe(eventTypes: [String], connectionRetryCount: Int = 10, _ eventHandler: @escaping (Event) -> Void) -> Connection {
+        return connect(retryCount: connectionRetryCount, eventHandler: eventHandler).subscribe(eventTypes: eventTypes)
     }
 }
 
@@ -46,12 +46,12 @@ public extension PlasmaClient {
             didSet { oldValue?.cancel() }
         }
         
-        fileprivate init(service: PlasmaStreamServiceServiceClient, eventHandler: @escaping (Event) -> Void) {
+        fileprivate init(service: PlasmaStreamServiceServiceClient, retryCount: Int, eventHandler: @escaping (Event) -> Void) {
             self.service = service
             self.eventHandler = eventHandler
 
             service.timeout = .greatestFiniteMagnitude
-            connect(retry: 10)
+            connect(retryCount: retryCount)
         }
         
         @discardableResult
@@ -76,7 +76,7 @@ public extension PlasmaClient {
             PlasmaClient.log("connection closed")
         }
         
-        private func connect(retry: Int) {
+        private func connect(retryCount: Int) {
             callLock.lock()
             defer { callLock.unlock() }
 
@@ -85,9 +85,9 @@ public extension PlasmaClient {
                 case .next(let payload):
                     PlasmaClient.log("received payload: \(payload)")
 
-                case .error(let error as RPCError) where error.callResult?.statusCode == .unavailable && retry > 0:
+                case .error(let error as RPCError) where error.callResult?.statusCode == .unavailable && retryCount > 0:
                     PlasmaClient.log("stream service is gone. \(error.localizedDescription)")
-                    self?.reconnect(after: 5, retry: retry - 1)
+                    self?.reconnect(after: 5, remainingCount: retryCount - 1)
                     return
 
                 case .error(let error):
@@ -98,12 +98,12 @@ public extension PlasmaClient {
             }
         }
 
-        private func reconnect(after interval: TimeInterval, retry: Int) {
+        private func reconnect(after interval: TimeInterval, remainingCount: Int) {
             reconnectQueue.asyncAfter(deadline: .now() + interval) { [weak self] in
                 guard let `self` = self else { return }
 
-                PlasmaClient.log("trying to reconnect... remaining: \(retry) times, eventTypes: \(self.events.map { $0.type })")
-                self.connect(retry: retry)
+                PlasmaClient.log("trying to reconnect... remaining: \(remainingCount) times, eventTypes: \(self.events.map { $0.type })")
+                self.connect(retryCount: remainingCount)
             }
         }
     }
@@ -111,17 +111,18 @@ public extension PlasmaClient {
 
 private extension PlasmaClient.Connection {
     final class Call {
-        private let protoCall: PlasmaStreamServiceEventsCall
         private let eventHandler: (PlasmaClient.Event) -> Void
+        private let protoCall: PlasmaStreamServiceEventsCall
 
         init?(service: PlasmaStreamServiceServiceClient, events: [PlasmaEventType], eventHandler: @escaping (PlasmaClient.Event) -> Void) {
             do {
+                self.eventHandler = eventHandler
                 self.protoCall = try service.events { callResult in
                     if callResult.statusCode == .unavailable {
                         eventHandler(.error(RPCError.callError(callResult)))
                     }
                 }
-                self.eventHandler = eventHandler
+
                 subscribe(events: events)
 
             } catch {
