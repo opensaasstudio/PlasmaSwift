@@ -26,13 +26,13 @@ public final class PlasmaClient {
         service.timeout = timeout
     }
     
-    public func connect(retryCount: Int = 10, eventHandler: @escaping (Event) -> Void) -> Connection {
+    public func connect(retryCount: Int, eventHandler: @escaping (Event) -> Void) -> Connection {
         return .init(service: service, retryCount: retryCount, eventHandler: eventHandler)
     }
 
     @discardableResult
-    public func subscribe(eventTypes: [String], connectionRetryCount: Int = 10, _ eventHandler: @escaping (Event) -> Void) -> Connection {
-        return connect(retryCount: connectionRetryCount, eventHandler: eventHandler).subscribe(eventTypes: eventTypes)
+    public func subscribe(eventTypes: [String], retryCount: Int, _ eventHandler: @escaping (Event) -> Void) -> Connection {
+        return connect(retryCount: retryCount, eventHandler: eventHandler).subscribe(eventTypes: eventTypes)
     }
 }
 

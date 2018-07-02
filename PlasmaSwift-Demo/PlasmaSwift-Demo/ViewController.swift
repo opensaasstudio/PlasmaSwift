@@ -10,7 +10,7 @@ final class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let connection = PlasmaClient(host: "localhost", port: 50051).connect { [weak self] result in
+        let connection = PlasmaClient(host: "localhost", port: 50051).connect(retryCount: 10) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .next(let payload):
