@@ -16,12 +16,14 @@ public final class PlasmaClient {
 
     private let service: PlasmaStreamServiceServiceClient
     
-    public init(host: String, port: Int, secure: Bool = true) {
+    public init(host: String, port: Int, secure: Bool = true, timeout: TimeInterval = .greatestFiniteMagnitude) {
         service = .init(address: "\(host):\(port)", secure: secure)
+        service.timeout = timeout
     }
 
-    public init(host: String, port: Int, certificates: String) {
+    public init(host: String, port: Int, certificates: String, timeout: TimeInterval = .greatestFiniteMagnitude) {
         service = .init(address: "\(host):\(port)", certificates: certificates)
+        service.timeout = timeout
     }
     
     public func connect(retryCount: Int = 10, eventHandler: @escaping (Event) -> Void) -> Connection {
@@ -50,7 +52,6 @@ public extension PlasmaClient {
             self.service = service
             self.eventHandler = eventHandler
 
-            service.timeout = .greatestFiniteMagnitude
             connect(retryCount: retryCount)
         }
         
