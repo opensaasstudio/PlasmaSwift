@@ -6,6 +6,7 @@ inhibit_all_warnings!
 
 def pods
   pod 'PlasmaSwift', :path => '../'
+  pod 'SwiftGRPC', git: 'https://github.com/grpc/grpc-swift.git', tag: '0.5.0'
 end
 
 target 'PlasmaSwift-Demo' do

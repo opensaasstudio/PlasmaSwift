@@ -116,6 +116,10 @@ private extension PlasmaClient.Connection {
         private let protoCall: PlasmaStreamServiceEventsCall
 
         init?(service: PlasmaStreamServiceServiceClient, events: [PlasmaEventType], eventHandler: @escaping (PlasmaClient.Event) -> Void) {
+            service.channel.subscribe { connectivityState in
+                PlasmaClient.log("connectivityState: \(connectivityState)")
+            }
+
             do {
                 self.eventHandler = eventHandler
                 self.protoCall = try service.events { callResult in

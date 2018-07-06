@@ -8,5 +8,5 @@ Pod::Spec.new do |s|
   s.source = { git: 'https://github.com/openfresh/PlasmaSwift.git', tag: s.version.to_s }
   s.ios.deployment_target = '9.0'
   s.source_files = 'PlasmaSwift/**/*.{h,swift}'
-  s.dependency 'SwiftGRPC', '~> 0.4.3'
+  s.dependency 'SwiftGRPC', '>= 0.4.3'
 end
