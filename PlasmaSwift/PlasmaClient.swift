@@ -49,7 +49,7 @@ public final class PlasmaClient {
 
 public extension PlasmaClient {
     public final class Connection {
-        private var makeService: () -> PlasmaStreamServiceServiceClient
+        private let makeService: () -> PlasmaStreamServiceServiceClient
         private let eventHandler: (Event) -> Void
         private let reconnectQueue = DispatchQueue(label: "io.github.openfresh.plasma.reconnectQueue")
         private let lock = NSLock()
