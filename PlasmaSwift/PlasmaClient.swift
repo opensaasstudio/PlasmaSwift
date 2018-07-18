@@ -67,17 +67,6 @@ public extension PlasmaClient {
             self.eventHandler = eventHandler
 
             connect()
-            networkReachability?.changed = { [weak self] networkReachability in
-                guard let `self` = self else { return }
-
-                if networkReachability.isReachable {
-                    PlasmaClient.log("network reachability changed. trying to reconnect...")
-                    self.connect()
-
-                } else {
-                    self.shutdown()
-                }
-            }
         }
 
         @discardableResult
@@ -93,18 +82,21 @@ public extension PlasmaClient {
             return self
         }
 
-        public func shutdown() {
-            lock.lock()
-            defer { lock.unlock() }
-
-            call = nil
-
-            PlasmaClient.log("connection closed")
-        }
-
         private func connect() {
             lock.lock()
             defer { lock.unlock() }
+
+            networkReachability?.changed = { [weak self] networkReachability in
+                guard let `self` = self else { return }
+
+                if networkReachability.isReachable {
+                    PlasmaClient.log("network reachability changed. trying to reconnect...")
+                    self.connect()
+
+                } else {
+                    self.disconnect()
+                }
+            }
 
             let service = makeService()
             call = Call(service: service, events: events) { [weak self] event in
@@ -129,6 +121,23 @@ public extension PlasmaClient {
                     }
                 }
             }
+        }
+
+        public func shutdown() {
+            lock.lock()
+            defer { lock.unlock() }
+
+            call = nil
+            networkReachability?.changed = nil
+            PlasmaClient.log("connection closed")
+        }
+
+        private func disconnect() {
+            lock.lock()
+            defer { lock.unlock() }
+
+            call = nil
+            PlasmaClient.log("connection closed temporarily")
         }
 
         private func reconnect(after interval: TimeInterval) -> Bool {
