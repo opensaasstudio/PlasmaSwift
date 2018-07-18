@@ -74,12 +74,25 @@ public extension PlasmaClient {
             lock.lock()
             defer { lock.unlock() }
 
-            let events = eventTypes.map(PlasmaEventType.init)
-            call?.subscribe(events: events)
-            self.events = events
+            if let call = call {
+                let events = eventTypes.map(PlasmaEventType.init)
+                call.subscribe(events: events)
+                self.events = events
+                PlasmaClient.log("subscribed events sent to plasma: \(eventTypes)")
 
-            PlasmaClient.log("subscribed events sent to plasma: \(eventTypes)")
+            } else {
+                PlasmaClient.log("connection is currently closed. failed to subscribe events: \(eventTypes)")
+            }
             return self
+        }
+
+        public func shutdown() {
+            lock.lock()
+            defer { lock.unlock() }
+
+            call = nil
+            networkReachability?.changed = nil
+            PlasmaClient.log("connection closed")
         }
 
         private func connect() {
@@ -121,15 +134,6 @@ public extension PlasmaClient {
                     }
                 }
             }
-        }
-
-        public func shutdown() {
-            lock.lock()
-            defer { lock.unlock() }
-
-            call = nil
-            networkReachability?.changed = nil
-            PlasmaClient.log("connection closed")
         }
 
         private func disconnect() {
