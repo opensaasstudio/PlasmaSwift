@@ -10,7 +10,8 @@ To run the example project, clone the repo, and run `pod install` from the Demo 
 
 ## Installation
 
-PlasmaSwift is available through [CocoaPods](http://cocoapods.org).  
+PlasmaSwift is currntly available through [CocoaPods](http://cocoapods.org) only.  
+Because, PlasmaSwift depends on [SwiftGRPC](https://github.com/grpc/grpc-swift) that not support Carthage.  
 To install it, simply add the following line to your Podfile:  
 
 ```ruby
@@ -19,10 +20,7 @@ pod "PlasmaSwift"
 
 ## Development
 
-Run following command to update compiled proto files.  
-```bash
-pod install
-```
+Run `make` command to compile proto file.  
 
 ## Author
 

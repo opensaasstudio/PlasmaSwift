@@ -1,196 +1,350 @@
-import Foundation
-import GRPCClient
+import SwiftGRPC
+import SwiftProtobuf
+import SystemConfiguration
 
 public final class PlasmaClient {
-    public typealias Event = (Bool, PLASMAPayload?, Error?)
-    public typealias EventHandler = (Event) -> Void
-    
+    public struct Payload {
+        public let data: String
+        public let eventType: String
+    }
+
+    public enum Event {
+        case next(payload: Payload)
+        case error(Error)
+    }
+
     public static var isDebugLogEnabled = false
-    
-    private let host: String
-    private let port: Int
-    private lazy var service = PLASMAStreamService(host: "\(host):\(port)")
-    
-    public static func useInsecureConnections(forHost host: String) {
-        GRPCCall.useInsecureConnections(forHost: host)
+
+    private let makeService: () -> PlasmaStreamServiceServiceClient
+
+    public convenience init(host: String, port: Int, secure: Bool = true, timeout: TimeInterval = .greatestFiniteMagnitude) {
+        self.init {
+            let service = PlasmaStreamServiceServiceClient(address: "\(host):\(port)", secure: secure)
+            service.timeout = timeout
+            return service
+        }
     }
-    
-    public static func setTLSPEMRootCerts(pemRootCert: String, forHost host: String) throws {
-        try GRPCCall.setTLSPEMRootCerts(pemRootCert, forHost: host)
+
+    public convenience init(host: String, port: Int, certificates: String, timeout: TimeInterval = .greatestFiniteMagnitude) {
+        self.init {
+            let service = PlasmaStreamServiceServiceClient(address: "\(host):\(port)", certificates: certificates)
+            service.timeout = timeout
+            return service
+        }
     }
-    
-    public init(host: String, port: Int) {
-        self.host = host
-        self.port = port
+
+    private init(makeService: @escaping () -> PlasmaStreamServiceServiceClient) {
+        self.makeService = makeService
     }
-    
-    public func connect(_ eventHandler: @escaping EventHandler) -> Connection {
-        return .init(service: service, eventHandler: eventHandler)
+
+    public func connect(retryCount: Int, eventHandler: @escaping (Event) -> Void) -> Connection {
+        return .init(retryCount: retryCount, makeService: makeService, eventHandler: eventHandler)
+    }
+
+    @discardableResult
+    public func subscribe(eventTypes: [String], retryCount: Int, _ eventHandler: @escaping (Event) -> Void) -> Connection {
+        return connect(retryCount: retryCount, eventHandler: eventHandler).subscribe(eventTypes: eventTypes)
     }
 }
 
 public extension PlasmaClient {
     public final class Connection {
-        private final class Call {
-            private let requestBuffer: GRXBufferedPipe = .init()
-            private let protoCall: GRPCProtoCall
-            
-            init(service: PLASMAStreamService, events: [PLASMAEventType], eventHandler: @escaping EventHandler) {
-                protoCall = service.rpcToEvents(withRequestsWriter: requestBuffer, eventHandler: eventHandler)
-                protoCall.start()
-                
-                subscribe(events: events)
-            }
-            
-            func subscribe(events: [PLASMAEventType]) {
-                guard !events.isEmpty else { return }
-                requestBuffer.writeValue(PLASMARequest(events: events))
-            }
-            
-            func cancel() {
-                requestBuffer.writeValue(PLASMARequest(forceClose: true))
-                protoCall.cancel()
-            }
+        private let makeService: () -> PlasmaStreamServiceServiceClient
+        private let eventHandler: (Event) -> Void
+        private let reconnectQueue = DispatchQueue(label: "io.github.openfresh.plasma.reconnectQueue")
+        private let lock = NSLock()
+        private var retryCount: Int
+        private var events = [PlasmaEventType]()
+        private lazy var networkReachability = NetworkReachability(queue: reconnectQueue)
+
+        private var call: Call? = nil {
+            didSet { oldValue?.cancel() }
         }
-        private let reconnectQueue: DispatchQueue = .init(label: "io.github.openfresh.plasma.reconnectQueue")
-        private let service: PLASMAStreamService
-        private let eventHandler: EventHandler
-        private let call: Atomic<Call?> = .init(nil) { oldValue in
-            oldValue?.cancel()
-        }
-        private var events: [PLASMAEventType] = []
-        
-        fileprivate init(service: PLASMAStreamService, eventHandler: @escaping EventHandler) {
-            self.service = service
+
+        fileprivate init(retryCount: Int, makeService: @escaping () -> PlasmaStreamServiceServiceClient, eventHandler: @escaping (Event) -> Void) {
+            self.retryCount = retryCount
+            self.makeService = makeService
             self.eventHandler = eventHandler
-            connect(retry: 10)
+
+            connect()
         }
 
         @discardableResult
-        public func subscribe(types: [String]) -> Self {
-            let events = types.map(PLASMAEventType.init(type:))
-            call.withValue { call in
-                call?.subscribe(events: events)
+        public func subscribe(eventTypes: [String]) -> Self {
+            lock.lock()
+            defer { lock.unlock() }
+
+            if let call = call {
+                let events = eventTypes.map(PlasmaEventType.init)
+                call.subscribe(events: events)
                 self.events = events
+                PlasmaClient.log("subscribed events sent to plasma: \(eventTypes)")
+
+            } else {
+                PlasmaClient.log("connection is currently closed. failed to subscribe events: \(eventTypes)")
             }
-            PlasmaClient.log("sent subscribed events \(types) to plasma")
-            
             return self
         }
-        
+
         public func shutdown() {
-            call.withValue { call in call?.cancel() }
-            PlasmaClient.log("closed connection")
+            lock.lock()
+            defer { lock.unlock() }
+
+            call = nil
+            networkReachability?.changed = nil
+            PlasmaClient.log("connection closed")
         }
-        
-        private func connect(retry: Int) {
-            call.modify { call in
-                call = Call(service: service, events: events) { [weak self] result, payload, error in
-                    if let error = error as NSError?,
-                        error.domain == "io.grpc" && error.code == Int(GRPCErrorCode.unavailable.rawValue) && retry > 0 {
-                        PlasmaClient.log("stream service is gone. \(error.localizedDescription)")
-                        
-                        self?.reconnectQueue.asyncAfter(deadline: .now() + 5) {
-                            PlasmaClient.log("trying to reconnect... eventTypes=\(String(describing: self?.events.map { $0.type }))")
-                            self?.connect(retry: retry - 1)
-                        }
-                        return
+
+        private func connect() {
+            lock.lock()
+            defer { lock.unlock() }
+
+            networkReachability?.changed = { [weak self] networkReachability in
+                guard let `self` = self else { return }
+
+                if networkReachability.isReachable {
+                    PlasmaClient.log("network reachability changed. trying to reconnect...")
+                    self.connect()
+
+                } else {
+                    self.disconnect()
+                }
+            }
+
+            let service = makeService()
+            call = Call(service: service, events: events) { [weak self] event in
+                guard let `self` = self else { return }
+
+                let isMaybeReachable = self.networkReachability?.isReachable ?? false
+
+                switch event {
+                case .next(let payload):
+                    PlasmaClient.log("received payload: \(payload)")
+                    self.eventHandler(event)
+
+                case .error(let error) where !isMaybeReachable:
+                    PlasmaClient.log("stream is not reachable. error: \(error.localizedDescription)")
+
+                case .error(let error):
+                    PlasmaClient.log("received error: \(error.localizedDescription).")
+                    let reconnectResult = self.reconnect(after: 5)
+
+                    if !reconnectResult {
+                        self.eventHandler(event)
                     }
-                    if let error = error as NSError? {
-                        PlasmaClient.log("error = \(error.localizedDescription)")
-                    }
-                    
-                    if let payload = payload {
-                        PlasmaClient.log("received payload = \(payload)")
-                    }
-                    
-                    self?.eventHandler((result, payload, error))
                 }
             }
         }
+
+        private func disconnect() {
+            lock.lock()
+            defer { lock.unlock() }
+
+            call = nil
+            PlasmaClient.log("connection closed temporarily")
+        }
+
+        private func reconnect(after interval: TimeInterval) -> Bool {
+            lock.lock()
+            defer { lock.unlock() }
+
+            let events = self.events
+            let remaining = retryCount - 1
+            self.retryCount = remaining
+
+            guard remaining >= 0 else { return false }
+
+            reconnectQueue.asyncAfter(deadline: .now() + interval) { [weak self] in
+                guard let `self` = self else { return }
+
+                PlasmaClient.log("trying to reconnect... remaining: \(remaining) times, eventTypes: \(events.map { $0.type })")
+                self.connect()
+            }
+
+            return true
+        }
     }
+}
+
+private extension PlasmaClient.Connection {
+    final class Call {
+        private let service: PlasmaStreamServiceServiceClient
+        private let eventHandler: (PlasmaClient.Event) -> Void
+        private let protoCall: PlasmaStreamServiceEventsCall
+
+        init?(service: PlasmaStreamServiceServiceClient, events: [PlasmaEventType], eventHandler: @escaping (PlasmaClient.Event) -> Void) {
+            do {
+                self.service = service
+                self.eventHandler = eventHandler
+                self.protoCall = try service.events { callResult in
+                    if callResult.statusCode == .unavailable {
+                        eventHandler(.error(RPCError.callError(callResult)))
+                    }
+                }
+
+                subscribe(events: events)
+
+            } catch {
+                eventHandler(.error(error))
+                return nil
+            }
+        }
+
+        func subscribeReceiveMessage() {
+            do {
+                try protoCall.receive { [weak self] result in
+                    guard let `self` = self else { return }
+
+                    switch result {
+                    case .result(let payload?) where payload.hasEventType:
+                        let payload = PlasmaClient.Payload(data: payload.data, eventType: payload.eventType.type)
+                        self.eventHandler(.next(payload: payload))
+                        self.subscribeReceiveMessage()
+
+                    case .result:
+                        break
+
+                    case .error(let error):
+                        self.eventHandler(.error(error))
+                    }
+                }
+
+            } catch {
+                eventHandler(.error(error))
+            }
+        }
+
+        func subscribe(events: [PlasmaEventType]) {
+            guard !events.isEmpty else { return }
+
+            do {
+                let request = PlasmaRequest(events: events)
+                try protoCall.send(request) { [weak self] error in
+                    guard let `self` = self, let error = error else { return }
+
+                    self.eventHandler(.error(error))
+                }
+
+            } catch {
+                eventHandler(.error(error))
+            }
+
+            subscribeReceiveMessage()
+        }
+
+        func cancel() {
+            do {
+                let request = PlasmaRequest(forceClose: true)
+                try protoCall.send(request) { [weak self] error in
+                    guard let `self` = self, let error = error else { return }
+
+                    self.eventHandler(.error(error))
+                }
+
+                protoCall.cancel()
+
+            } catch {
+                eventHandler(.error(error))
+            }
+        }
+    }
+}
+
+private final class NetworkReachability {
+    var changed: ((NetworkReachability) -> Void)?
+
+    var isReachable: Bool {
+        return currentFlags.contains(.reachable)
+    }
+
+    private let reachability: SCNetworkReachability
+    private var currentFlags: SCNetworkReachabilityFlags
+
+    init?(queue: DispatchQueue) {
+        var address = sockaddr()
+        address.sa_len = UInt8(MemoryLayout<sockaddr>.size)
+        address.sa_family = sa_family_t(AF_INET)
+
+        guard let reachability = SCNetworkReachabilityCreateWithAddress(nil, &address) else {
+            return nil
+        }
+
+        var _flags = SCNetworkReachabilityFlags()
+        let getFlagsResult = SCNetworkReachabilityGetFlags(reachability, &_flags)
+
+        self.reachability = reachability
+        self.currentFlags = getFlagsResult ? _flags : .init()
+
+        var context = SCNetworkReachabilityContext(
+            version: 0,
+            info: .init(Unmanaged<NetworkReachability>.passUnretained(self).toOpaque()),
+            retain: nil,
+            release: nil,
+            copyDescription: nil
+        )
+
+        let setCallbackResult = SCNetworkReachabilitySetCallback(reachability, reachabilityCallback, &context)
+        let setDispatchQueueResult = SCNetworkReachabilitySetDispatchQueue(reachability, queue)
+
+        guard setCallbackResult && setDispatchQueueResult else {
+            return nil
+        }
+    }
+
+    func reachabilityChanged(with flags: SCNetworkReachabilityFlags) {
+        guard currentFlags != flags else { return }
+
+        currentFlags = flags
+        changed?(self)
+    }
+
+    deinit {
+        SCNetworkReachabilitySetCallback(reachability, nil, nil)
+        SCNetworkReachabilitySetDispatchQueue(reachability, nil)
+    }
+}
+
+private func reachabilityCallback(reachability: SCNetworkReachability, flags: SCNetworkReachabilityFlags, info: UnsafeMutableRawPointer?) {
+    guard let info = info else { return }
+
+    let networkReachability = Unmanaged<NetworkReachability>.fromOpaque(info).takeUnretainedValue()
+    networkReachability.reachabilityChanged(with: flags)
 }
 
 private extension PlasmaClient {
     static let dateFormatter: DateFormatter = {
-        var formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSZ"
         return formatter
     }()
-    
+
     static func log<T>(_ data: @autoclosure () -> T) {
         guard isDebugLogEnabled else { return }
-        
-        let dateString = dateFormatter.string(from: Date())
-        let fullLog = "\(dateString) [PLASMA] \(data())"
-        
-        print(fullLog)
+
+        let now = Date()
+        let dateString = dateFormatter.string(from: now)
+        let log = "\(dateString) [Plasma] \(data())"
+
+        print(log)
     }
 }
 
-private extension PLASMARequest {
-    convenience init(forceClose: Bool) {
+private extension PlasmaRequest {
+    init(forceClose: Bool) {
         self.init()
         self.forceClose = forceClose
     }
-    
-    convenience init(events: [PLASMAEventType]) {
+
+    init(events: [PlasmaEventType]) {
         self.init()
-        self.eventsArray = NSMutableArray(array: events)
+        self.events = events
     }
 }
 
-private extension PLASMAEventType {
-    convenience init(type: String) {
+private extension PlasmaEventType {
+    init(type: String) {
         self.init()
         self.type = type
-    }
-}
-
-private final class Atomic<Value> {
-    private var _value: Value {
-        didSet {
-            didSet?(oldValue)
-        }
-    }
-    private let didSet: ((Value) -> Void)?
-    private let lock: NSLock = .init()
-    
-    init(_ value: Value, didSet: ((Value) -> Void)? = nil) {
-        _value = value
-        self.didSet = didSet
-    }
-    
-    var value: Value {
-        get {
-            return withValue { $0 }
-        }
-        set {
-            swap(newValue)
-        }
-    }
-    
-    @discardableResult
-    func modify<Result>(_ action: (inout Value) throws -> Result) rethrows -> Result {
-        lock.lock()
-        defer { lock.unlock() }
-        return try action(&_value)
-    }
-    
-    @discardableResult
-    func withValue<Result>(_ action: (Value) throws -> Result) rethrows -> Result {
-        lock.lock()
-        defer { lock.unlock() }
-        
-        return try action(_value)
-    }
-    
-    @discardableResult
-    func swap(_ newValue: Value) -> Value {
-        return modify { value in
-            let oldValue = value
-            value = newValue
-            return oldValue
-        }
     }
 }
